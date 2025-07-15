@@ -289,11 +289,11 @@
         <div class="header">
             <h1><i class="fas fa-user-times"></i> Xác nhận xóa User</h1>
             <div class="breadcrumb">
-                <a href="${pageContext.request.contextPath}/dashboard_admin.jsp">
+                <a href="${pageContext.request.contextPath}/admin-dashboard">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
                 <span class="separator">•</span>
-                <a href="${pageContext.request.contextPath}/admin_user_list.jsp">
+                <a href="${pageContext.request.contextPath}/admin/users">
                     <i class="fas fa-users"></i> Danh sách User
                 </a>
                 <span class="separator">•</span>

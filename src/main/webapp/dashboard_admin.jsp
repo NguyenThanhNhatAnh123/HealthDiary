@@ -905,9 +905,10 @@
 
 
        
-      function editUser(userId) {
-    	  window.location.href = 'admin/user/edit?id=' + userId;
-        }
+    	  function editUser(userId) {
+    	  window.location.href = '${pageContext.request.contextPath}/admin/user/edit?id=' + userId;
+	
+       	 }
         function deleteUser(userId) {
             if (confirm('Bạn có chắc chắn muốn xóa user này?')) {
             	window.location.href = 'admin/user/delete?id=' + userId;

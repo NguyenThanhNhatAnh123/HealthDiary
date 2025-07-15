@@ -132,7 +132,7 @@ public class UserDAO {
         return false;
     }
     public boolean deleteUser(int UserID) throws Exception{
-    	String sql = "Delete * FROM users WHERE id =?";
+    	String sql = "DELETE FROM users WHERE id =?";
     	try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 

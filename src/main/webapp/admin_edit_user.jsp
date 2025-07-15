@@ -294,6 +294,19 @@
             gap: 12px;
         }
 
+        /* Success Message */
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border-left: 4px solid #4caf50;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -351,11 +364,11 @@
         <div class="header">
             <h1><i class="fas fa-user-edit"></i> Chỉnh sửa User</h1>
             <div class="breadcrumb">
-                <a href="${pageContext.request.contextPath}/dashboard_admin.jsp">
+                <a href="${pageContext.request.contextPath}/admin-dashboard">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
                 <span class="separator">•</span>
-                <a href="${pageContext.request.contextPath}/admin_user_list.jsp">
+                <a href="${pageContext.request.contextPath}/admin/users">
                     <i class="fas fa-users"></i> Danh sách User
                 </a>
                 <span class="separator">•</span>
@@ -378,47 +391,45 @@
                         <span>${error}</span>
                     </div>
                 </c:if>
+                <c:if test="${not empty success}">
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <span>${success}</span>
+                    </div>
+                </c:if>
 
                 <c:if test="${not empty user}">
                     <form action="${pageContext.request.contextPath}/admin/user/edit" method="post">
                         <input type="hidden" name="userId" value="${user.id}">
-                        
                         <!-- Thông tin cơ bản -->
                         <div class="section-title">
                             <i class="fas fa-user"></i>
                             Thông tin cơ bản
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-user"></i>
                                     Họ và tên <span class="required">*</span>
                                 </label>
-                                <input type="text" name="fullName" class="form-input" 
-                                       value="${user.fullName}" required>
+                                <input type="text" name="fullName" class="form-input" value="${user.fullName}" required>
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-envelope"></i>
                                     Email <span class="required">*</span>
                                 </label>
-                                <input type="email" name="email" class="form-input" 
-                                       value="${user.email}" required>
+                                <input type="email" name="email" class="form-input" value="${user.email}" required>
                             </div>
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-calendar"></i>
                                     Tuổi
                                 </label>
-                                <input type="number" name="age" class="form-input" 
-                                       value="${user.age}" min="1" max="120">
+                                <input type="number" name="age" class="form-input" value="${user.age}" min="1" max="120">
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-venus-mars"></i>
@@ -426,39 +437,33 @@
                                 </label>
                                 <select name="gender" class="form-select">
                                     <option value="">Chọn giới tính</option>
-                                    <option value="Nam" ${user.gender == 'Nam' ? 'selected' : ''}>Nam</option>
-                                    <option value="Nữ" ${user.gender == 'Nữ' ? 'selected' : ''}>Nữ</option>
-                                    <option value="Khác" ${user.gender == 'Khác' ? 'selected' : ''}>Khác</option>
+                                    <option value="Nam" <c:if test="${user.gender == 'Nam'}">selected</c:if>>Nam</option>
+                                    <option value="Nữ" <c:if test="${user.gender == 'Nữ'}">selected</c:if>>Nữ</option>
+                                    <option value="Khác" <c:if test="${user.gender == 'Khác'}">selected</c:if>>Khác</option>
                                 </select>
                             </div>
                         </div>
-
                         <!-- Thông tin thể chất -->
                         <div class="section-title">
                             <i class="fas fa-heartbeat"></i>
                             Thông tin thể chất
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-ruler-vertical"></i>
                                     Chiều cao (cm)
                                 </label>
-                                <input type="number" name="height" class="form-input" 
-                                       value="${user.heightCm}" min="50" max="300" step="0.1">
+                                <input type="number" name="height" class="form-input" value="${user.heightCm}" min="50" max="300" step="0.1">
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">
                                     <i class="fas fa-weight"></i>
                                     Cân nặng (kg)
                                 </label>
-                                <input type="number" name="weight" class="form-input" 
-                                       value="${user.weightKg}" min="20" max="300" step="0.1">
+                                <input type="number" name="weight" class="form-input" value="${user.weightKg}" min="20" max="300" step="0.1">
                             </div>
                         </div>
-                        
                         <div class="form-group full-width">
                             <label class="form-label">
                                 <i class="fas fa-target"></i>
@@ -466,40 +471,33 @@
                             </label>
                             <textarea name="goal" class="form-input" placeholder="Nhập mục tiêu sức khỏe của user...">${user.goal}</textarea>
                         </div>
-
                         <!-- Thay đổi mật khẩu -->
                         <div class="password-section">
                             <h4>
                                 <i class="fas fa-key"></i>
                                 Thay đổi mật khẩu (tùy chọn)
                             </h4>
-                            
                             <div class="form-row">
                                 <div class="form-group">
                                     <label class="form-label">
                                         <i class="fas fa-lock"></i>
                                         Mật khẩu mới
                                     </label>
-                                    <input type="password" name="password" class="form-input" 
-                                           minlength="4" placeholder="Để trống nếu không thay đổi">
+                                    <input type="password" name="password" class="form-input" minlength="4" placeholder="Để trống nếu không thay đổi">
                                 </div>
-                                
                                 <div class="form-group">
                                     <label class="form-label">
                                         <i class="fas fa-lock"></i>
                                         Xác nhận mật khẩu
                                     </label>
-                                    <input type="password" name="confirmPassword" class="form-input" 
-                                           minlength="4" placeholder="Nhập lại mật khẩu mới">
+                                    <input type="password" name="confirmPassword" class="form-input" minlength="4" placeholder="Nhập lại mật khẩu mới">
                                 </div>
                             </div>
-                            
                             <div class="password-note">
                                 <i class="fas fa-info-circle"></i>
                                 Mật khẩu phải có ít nhất 4 ký tự. Nếu không nhập, mật khẩu hiện tại sẽ được giữ nguyên.
                             </div>
                         </div>
-
                         <div class="action-buttons">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i>
@@ -512,13 +510,11 @@
                         </div>
                     </form>
                 </c:if>
-
                 <c:if test="${empty user}">
                     <div class="error-message">
                         <i class="fas fa-exclamation-circle"></i>
                         <span>Không tìm thấy thông tin user để chỉnh sửa.</span>
                     </div>
-                    
                     <div class="action-buttons">
                         <a href="${pageContext.request.contextPath}/admin/users" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i>

@@ -6,9 +6,7 @@ import com.healthdiary.dao.UserDAO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/admin/user/edit")
@@ -25,11 +23,10 @@ public class AdminUserEditServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy ID của user cần edit
         String userIdStr = request.getParameter("id");
 
         if (userIdStr == null || userIdStr.trim().isEmpty()) {
-            request.setAttribute("error", "ID user không hợp lệ");
+            request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
         }
@@ -39,21 +36,20 @@ public class AdminUserEditServlet extends HttpServlet {
             User user = userDAO.getUserById(userId);
 
             if (user == null) {
-                request.setAttribute("error", "Không tìm thấy user với ID: " + userId);
+                request.getSession().setAttribute("error", "Không tìm thấy user với ID: " + userId);
                 response.sendRedirect(request.getContextPath() + "/admin/users");
                 return;
             }
 
-            // Đặt user vào request để hiển thị trong form
             request.setAttribute("user", user);
             request.getRequestDispatcher("/admin_edit_user.jsp").forward(request, response);
 
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "ID user không hợp lệ");
+            request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Lỗi khi tải thông tin user");
+            request.getSession().setAttribute("error", "Lỗi khi tải thông tin user");
             response.sendRedirect(request.getContextPath() + "/admin/users");
         }
     }
@@ -61,7 +57,6 @@ public class AdminUserEditServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Lấy dữ liệu từ form
         String userIdStr = request.getParameter("userId");
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
@@ -73,9 +68,8 @@ public class AdminUserEditServlet extends HttpServlet {
         String weightStr = request.getParameter("weight");
         String goal = request.getParameter("goal");
 
-        // Kiểm tra ID user
         if (userIdStr == null || userIdStr.trim().isEmpty()) {
-            request.setAttribute("error", "ID user không hợp lệ");
+            request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
         }
@@ -84,28 +78,27 @@ public class AdminUserEditServlet extends HttpServlet {
         try {
             userId = Integer.parseInt(userIdStr.trim());
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "ID user không hợp lệ");
+            request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
         }
 
-        // Lấy thông tin user hiện tại
         User currentUser;
         try {
             currentUser = userDAO.getUserById(userId);
             if (currentUser == null) {
-                request.setAttribute("error", "Không tìm thấy user với ID: " + userId);
+                request.getSession().setAttribute("error", "Không tìm thấy user với ID: " + userId);
                 response.sendRedirect(request.getContextPath() + "/admin/users");
                 return;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "Lỗi khi tải thông tin user");
+            request.getSession().setAttribute("error", "Lỗi khi tải thông tin user");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
         }
 
-        // Kiểm tra dữ liệu bắt buộc
+        // Validate dữ liệu bắt buộc
         if (fullName == null || fullName.trim().isEmpty() ||
                 email == null || email.trim().isEmpty()) {
             request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin bắt buộc");
@@ -114,7 +107,7 @@ public class AdminUserEditServlet extends HttpServlet {
             return;
         }
 
-        // Kiểm tra email hợp lệ
+        // Validate email format
         if (!authService.isValidEmail(email.trim())) {
             request.setAttribute("error", "Email không hợp lệ");
             request.setAttribute("user", currentUser);
@@ -122,7 +115,7 @@ public class AdminUserEditServlet extends HttpServlet {
             return;
         }
 
-        // Kiểm tra email đã tồn tại (trừ user hiện tại)
+        // Kiểm tra email đã tồn tại (nếu đổi)
         if (!email.trim().equals(currentUser.getEmail())) {
             try {
                 if (userDAO.emailExists(email.trim())) {
@@ -133,14 +126,14 @@ public class AdminUserEditServlet extends HttpServlet {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                request.setAttribute("error", "Lỗi kiểm tra email.");
+                request.setAttribute("error", "Lỗi khi kiểm tra email");
                 request.setAttribute("user", currentUser);
                 request.getRequestDispatcher("/admin_edit_user.jsp").forward(request, response);
                 return;
             }
         }
 
-        // Kiểm tra password nếu có thay đổi
+        // Kiểm tra password nếu được nhập
         if (password != null && !password.trim().isEmpty()) {
             if (!authService.isValidPassword(password)) {
                 request.setAttribute("error", "Mật khẩu phải có ít nhất 4 ký tự");
@@ -149,7 +142,7 @@ public class AdminUserEditServlet extends HttpServlet {
                 return;
             }
 
-            if (confirmPassword == null || !password.equals(confirmPassword)) {
+            if (!password.equals(confirmPassword)) {
                 request.setAttribute("error", "Mật khẩu xác nhận không khớp");
                 request.setAttribute("user", currentUser);
                 request.getRequestDispatcher("/admin_edit_user.jsp").forward(request, response);
@@ -157,10 +150,11 @@ public class AdminUserEditServlet extends HttpServlet {
             }
         }
 
-        // Parse các trường số
+        // Parse số
         Integer age = null;
         Float height = null;
         Float weight = null;
+
         try {
             if (ageStr != null && !ageStr.trim().isEmpty()) {
                 age = Integer.parseInt(ageStr.trim());
@@ -178,7 +172,7 @@ public class AdminUserEditServlet extends HttpServlet {
             return;
         }
 
-        // Cập nhật thông tin user
+        // Cập nhật user
         currentUser.setFullName(fullName.trim());
         currentUser.setEmail(email.trim());
         currentUser.setAge(age);
@@ -187,11 +181,9 @@ public class AdminUserEditServlet extends HttpServlet {
         currentUser.setWeightKg(weight);
         currentUser.setGoal(goal);
 
-        // Lưu thông tin user vào database
         try {
-            boolean success = userDAO.updateUser(currentUser);
-            if (success) {
-                // Cập nhật password nếu có thay đổi
+            boolean updated = userDAO.updateUser(currentUser);
+            if (updated) {
                 if (password != null && !password.trim().isEmpty()) {
                     String passwordHash = authService.getPasswordHash(password);
                     userDAO.updatePassword(userId, passwordHash);

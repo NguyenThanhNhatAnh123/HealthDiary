@@ -225,7 +225,30 @@
             background: #ffebee;
             color: #d32f2f;
         }
+		.breadcrumb {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
 
+        .breadcrumb a {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            background: #e3f2fd;
+            transform: translateY(-1px);
+        }
+
+        .breadcrumb .separator {
+            color: #90caf9;
+            font-size: 14px;
+        }
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -279,12 +302,13 @@
                 <i class="fas fa-users"></i>
                 Danh sách User
             </h1>
-            <div class="header-actions">
-                <a href="${pageContext.request.contextPath}/admin/user/add" class="btn btn-primary">
-                    <i class="fas fa-plus"></i>
-                    Thêm User Mới
-                </a>
-            </div>
+			            <!-- Breadcrumb Navigation -->
+			<div class="breadcrumb">
+			    <a href="${pageContext.request.contextPath}/admin-dashboard">
+			        <i class="fas fa-home"></i>
+			        Dashboard
+			    </a>
+			</div>
         </div>
 
         <!-- Success Alert -->
@@ -405,7 +429,7 @@
                                                 <i class="fas fa-edit"></i>
                                                 Sửa
                                             </a>
-                                            <button class="btn btn-danger" onclick="deleteUser(${user.id}, '${user.fullName}')">
+                                            <button class="btn btn-danger" onclick="deleteUser(${user.id})">
                                                 <i class="fas fa-trash"></i>
                                                 Xóa
                                             </button>
@@ -431,60 +455,13 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 16px; max-width: 400px; width: 90%;">
-            <h3 style="color: #d32f2f; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-exclamation-triangle"></i>
-                Xác nhận xóa
-            </h3>
-            <p style="margin-bottom: 24px;" id="deleteMessage"></p>
-            <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                <button onclick="closeDeleteModal()" class="btn" style="background: #f0f0f0; color: #666;">
-                    Hủy
-                </button>
-                <button onclick="confirmDelete()" class="btn btn-danger">
-                    <i class="fas fa-trash"></i>
-                    Xóa
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hidden form for delete -->
-    <form id="deleteForm" method="POST" style="display: none;">
-        <input type="hidden" name="action" value="delete">
-        <input type="hidden" name="userId" id="deleteUserId">
-    </form>
-
     <script>
-        let deleteUserId = null;
+    function deleteUser(userId) {
+        if (confirm('Bạn có chắc chắn muốn xóa user này?')) {
+        	window.location.href = '${pageContext.request.contextPath}/admin/user/delete?id=' + userId;
 
-        function deleteUser(userId, userName) {
-            deleteUserId = userId;
-            document.getElementById('deleteMessage').textContent = 
-                `Bạn có chắc chắn muốn xóa user "${userName}"? Hành động này không thể hoàn tác.`;
-            document.getElementById('deleteModal').style.display = 'block';
         }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-            deleteUserId = null;
-        }
-
-        function confirmDelete() {
-            if (deleteUserId) {
-                document.getElementById('deleteUserId').value = deleteUserId;
-                document.getElementById('deleteForm').submit();
-            }
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('deleteModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeDeleteModal();
-            }
-        });
+    }
 
         // Auto hide alerts after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
