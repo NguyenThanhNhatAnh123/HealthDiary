@@ -23,14 +23,12 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	request.getSession().invalidate();
-        // Check if user is already logged in
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("user") != null) {
-            response.sendRedirect("dashboard");
-            return;
+        // Xóa session cũ (nếu có)
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
         }
-
+        // Không cần kiểm tra user đã đăng nhập vì đã xóa session
         request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
@@ -51,16 +49,23 @@ public class LoginServlet extends HttpServlet {
 
         // Attempt login
         User user = null;
-		try {
-			user = authService.loginUser(email.trim(), password);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            user = authService.loginUser(email.trim(), password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Có lỗi hệ thống, vui lòng thử lại sau.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
 
         if (user != null) {
             // Login successful
-            HttpSession session = request.getSession();
+            // Chống session fixation: tạo session mới
+            HttpSession oldSession = request.getSession(false);
+            if (oldSession != null) {
+                oldSession.invalidate();
+            }
+            HttpSession session = request.getSession(true);
             session.setAttribute("user", user);
             session.setAttribute("userId", user.getId());
             session.setAttribute("userEmail", user.getEmail());

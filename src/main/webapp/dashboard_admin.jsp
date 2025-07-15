@@ -542,28 +542,48 @@
                     <div class="stat-icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <div class="stat-value">${totalUsers != null ? totalUsers : 0}</div>
+                    <div class="stat-value">
+                        <c:choose>
+                            <c:when test="${not empty totalUsers}">${totalUsers}</c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose>
+                    </div>
                     <div class="stat-label">Tổng người dùng</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
                         <i class="fas fa-utensils"></i>
                     </div>
-                    <div class="stat-value">${totalFoods != null ? totalFoods : 0}</div>
+                    <div class="stat-value">
+                        <c:choose>
+                            <c:when test="${not empty totalFoods}">${totalFoods}</c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose>
+                    </div>
                     <div class="stat-label">Món ăn</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
                         <i class="fas fa-dumbbell"></i>
                     </div>
-                    <div class="stat-value">${totalExercises != null ? totalExercises : 0}</div>
+                    <div class="stat-value">
+                        <c:choose>
+                            <c:when test="${not empty totalExercises}">${totalExercises}</c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose>
+                    </div>
                     <div class="stat-label">Bài tập</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">
                         <i class="fas fa-user-check"></i>
                     </div>
-                    <div class="stat-value">${activeUsers != null ? activeUsers : 0}</div>
+                    <div class="stat-value">
+                        <c:choose>
+                            <c:when test="${not empty activeUsers}">${activeUsers}</c:when>
+                            <c:otherwise>0</c:otherwise>
+                        </c:choose>
+                    </div>
                     <div class="stat-label">Hoạt động hôm nay</div>
                 </div>
             </div>
@@ -582,7 +602,6 @@
                     <i class="fas fa-plus"></i>
                     Thêm người dùng
                 </a>
-               
             </div>
 
             <div class="user-table-wrapper">
@@ -613,11 +632,36 @@
                                         <td>${user.id}</td>
                                         <td>${user.fullName}</td>
                                         <td>${user.email}</td>
-                                        <td>${user.age != null ? user.age : 'N/A'}</td>
-                                        <td>${user.gender != null ? user.gender : 'N/A'}</td>
-                                        <td>${user.heightCm != null ? user.heightCm : 'N/A'}</td>
-                                        <td>${user.weightKg != null ? user.weightKg : 'N/A'}</td>
-                                        <td>${user.goal != null ? user.goal : 'N/A'}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty user.age}">${user.age}</c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty user.gender}">${user.gender}</c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty user.heightCm}">${user.heightCm}</c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty user.weightKg}">${user.weightKg}</c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${not empty user.goal}">${user.goal}</c:when>
+                                                <c:otherwise>N/A</c:otherwise>
+                                            </c:choose>
+                                        </td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${not empty user.createdAt}">
@@ -859,73 +903,11 @@
 
         // JavaScript functions cho toolbar actions
 
-        // Hàm xử lý khi bấm nút "Cập nhật"
-        function editSelectedUser() {
-            // Lấy user được chọn (giả sử có checkbox hoặc radio button)
-            const selectedUser = getSelectedUser();
-            
-            if (selectedUser) {
-                // Chuyển đến trang edit user với ID của user
-                window.location.href = `admin/user/edit?id=${selectedUser.id}`;
-            } else {
-                alert("Vui lòng chọn một người dùng để cập nhật!");
-            }
-        }
 
-        // Hàm xử lý khi bấm nút "Xóa"
-        function deleteSelectedUsers() {
-            // Lấy danh sách users được chọn
-            const selectedUsers = getSelectedUsers();
-            
-            if (selectedUsers.length === 0) {
-                alert("Vui lòng chọn ít nhất một người dùng để xóa!");
-                return;
-            }
-            
-            // Xác nhận trước khi xóa
-            const confirmMessage = selectedUsers.length === 1 
-                ? "Bạn có chắc chắn muốn xóa người dùng này không?" 
-                : `Bạn có chắc chắn muốn xóa ${selectedUsers.length} người dùng được chọn không?`;
-            
-            if (confirm(confirmMessage)) {
-                // Chuyển đến trang delete user với danh sách IDs
-                const userIds = selectedUsers.map(user => user.id).join(',');
-                window.location.href = `admin/user/delete?ids=${userIds}`;
-            }
+       
+      function editUser(userId) {
+    	  window.location.href = 'admin/user/edit?id=' + userId;
         }
-
-        // Hàm helper để lấy user được chọn (cho nút cập nhật)
-        function getSelectedUser() {
-            const selectedCheckbox = document.querySelector('input[name="userSelect"]:checked');
-            if (selectedCheckbox) {
-                return {
-                    id: selectedCheckbox.value,
-                    // Có thể thêm thông tin khác nếu cần
-                };
-            }
-            return null;
-        }
-
-        // Hàm helper để lấy danh sách users được chọn (cho nút xóa)
-        function getSelectedUsers() {
-            const selectedCheckboxes = document.querySelectorAll('input[name="userSelect"]:checked');
-            const selectedUsers = [];
-            
-            selectedCheckboxes.forEach(checkbox => {
-                selectedUsers.push({
-                    id: checkbox.value,
-                    // Có thể thêm thông tin khác nếu cần
-                });
-            });
-            
-            return selectedUsers;
-        }
-
-        // User management functions
-        function editUser(userId) {
-            window.location.href = `/admin/user/edit?id=${userId}`;
-        }
-
         function deleteUser(userId) {
             if (confirm('Bạn có chắc chắn muốn xóa user này?')) {
             	window.location.href = 'admin/user/delete?id=' + userId;
@@ -963,56 +945,8 @@
             }
         }
 
-        function editSelectedFood() {
-            const selectedCheckboxes = document.querySelectorAll('.food-checkbox:checked');
-            
-            if (selectedCheckboxes.length === 0) {
-                alert('Vui lòng chọn ít nhất một món ăn để cập nhật.');
-                return;
-            }
-            
-            if (selectedCheckboxes.length > 1) {
-                alert('Chỉ có thể cập nhật một món ăn tại một thời điểm.');
-                return;
-            }
-            
-            const foodId = selectedCheckboxes[0].value;
-            editFood(foodId);
-        }
+   
 
-        function deleteSelectedFoods() {
-            const selectedCheckboxes = document.querySelectorAll('.food-checkbox:checked');
-            
-            if (selectedCheckboxes.length === 0) {
-                alert('Vui lòng chọn ít nhất một món ăn để xóa.');
-                return;
-            }
-            
-            if (confirm(`Bạn có chắc muốn xóa ${selectedCheckboxes.length} món ăn đã chọn? Hành động này không thể hoàn tác.`)) {
-                const foodIds = Array.from(selectedCheckboxes).map(cb => cb.value);
-                
-                fetch('admin-delete-foods', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ foodIds: foodIds })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Xóa món ăn thành công!');
-                        location.reload();
-                    } else {
-                        alert('Lỗi khi xóa món ăn: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Có lỗi xảy ra khi xóa món ăn.');
-                });
-            }
-        }
 
         // Exercise management functions
         function editExercise(exerciseId) {
@@ -1045,56 +979,6 @@
             }
         }
 
-        function editSelectedExercise() {
-            const selectedCheckboxes = document.querySelectorAll('.exercise-checkbox:checked');
-            
-            if (selectedCheckboxes.length === 0) {
-                alert('Vui lòng chọn ít nhất một bài tập để cập nhật.');
-                return;
-            }
-            
-            if (selectedCheckboxes.length > 1) {
-                alert('Chỉ có thể cập nhật một bài tập tại một thời điểm.');
-                return;
-            }
-            
-            const exerciseId = selectedCheckboxes[0].value;
-            editExercise(exerciseId);
-        }
-
-        function deleteSelectedExercises() {
-            const selectedCheckboxes = document.querySelectorAll('.exercise-checkbox:checked');
-            
-            if (selectedCheckboxes.length === 0) {
-                alert('Vui lòng chọn ít nhất một bài tập để xóa.');
-                return;
-            }
-            
-            if (confirm(`Bạn có chắc muốn xóa ${selectedCheckboxes.length} bài tập đã chọn? Hành động này không thể hoàn tác.`)) {
-                const exerciseIds = Array.from(selectedCheckboxes).map(cb => cb.value);
-                
-                fetch('admin-delete-exercises', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ exerciseIds: exerciseIds })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Xóa bài tập thành công!');
-                        location.reload();
-                    } else {
-                        alert('Lỗi khi xóa bài tập: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Có lỗi xảy ra khi xóa bài tập.');
-                });
-            }
-        }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
