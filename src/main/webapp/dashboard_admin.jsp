@@ -485,6 +485,59 @@
             padding: 8px 6px;
             font-size: 13px;
         }
+
+        /* Type Badge for Food */
+        .type-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type-breakfast {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .type-lunch {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .type-dinner {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .type-snack {
+            background: #e1f5fe;
+            color: #0277bd;
+        }
+
+        /* Difficulty Badge for Exercise */
+        .difficulty-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .difficulty-beginner {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .difficulty-intermediate {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .difficulty-advanced {
+            background: #ffebee;
+            color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -530,6 +583,24 @@
             </div>
         </div>
 
+        <!-- Success Alert -->
+        <c:if test="${not empty success}">
+            <div class="alert alert-success" style="background: #e8f5e8; color: #2e7d32; border-left: 4px solid #4caf50; padding: 16px 20px; margin-bottom: 24px; border-radius: 12px; font-weight: 500; display: flex; align-items: center; gap: 12px;">
+                <i class="fas fa-check-circle"></i>
+                <span>${success}</span>
+            </div>
+            <c:remove var="success" scope="session"/>
+        </c:if>
+
+        <!-- Error Alert -->
+        <c:if test="${not empty error}">
+            <div class="alert alert-error" style="background: #ffebee; color: #d32f2f; border-left: 4px solid #d32f2f; padding: 16px 20px; margin-bottom: 24px; border-radius: 12px; font-weight: 500; display: flex; align-items: center; gap: 12px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>${error}</span>
+            </div>
+            <c:remove var="error" scope="session"/>
+        </c:if>
+
         <!-- Dashboard Overview -->
         <div id="dashboard" class="main-content">
             <h2 class="section-header">
@@ -537,6 +608,7 @@
                 Tổng quan hệ thống
             </h2>
             
+          
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">
@@ -598,7 +670,7 @@
             
             <div class="toolbar">
                 <input type="text" class="search-box" placeholder="Tìm kiếm người dùng..." onkeyup="searchUsers(this.value)" id="userSearchInput">
-                <a href="admin/user/add" class="btn btn-primary">
+                <a href="${pageContext.request.contextPath}/admin/user/add" class="btn btn-primary">
                     <i class="fas fa-plus"></i>
                     Thêm người dùng
                 </a>
@@ -708,39 +780,75 @@
             
             <div class="toolbar">
                 <input type="text" class="search-box" placeholder="Tìm kiếm món ăn..." onkeyup="searchFoods(this.value)" id="foodSearchInput">
-                <a href="admin_add_food.jsp" class="btn btn-primary">
+                <a href="${pageContext.request.contextPath}/admin/food/add" class="btn btn-primary">
                     <i class="fas fa-plus"></i>
                     Thêm món ăn
                 </a>
-               
-                
             </div>
 
-            <table class="user-table">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox" id="selectAllFoods" onchange="toggleSelectAllFoods()">
-                        </th>
-                        <th>ID</th>
-                        <th>Tên món ăn</th>
-                        <th>Loại</th>
-                        <th>Calo (100g)</th>
-                        <th>Protein (g)</th>
-                        <th>Carbs (g)</th>
-                        <th>Chất béo (g)</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="foodsTableBody">
-                    <tr>
-                        <td colspan="9" class="text-center">
-                            <i class="fas fa-utensils" style="font-size: 48px; color: #ccc; margin-bottom: 16px; display: block;"></i>
-                            Chưa có dữ liệu món ăn
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="user-table-wrapper">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllFoods" onchange="toggleSelectAllFoods()">
+                            </th>
+                            <th>ID</th>
+                            <th>Tên món ăn</th>
+                            <th>Loại</th>
+                            <th>Calo (100g)</th>
+                            <th>Protein (g)</th>
+                            <th>Carbs (g)</th>
+                            <th>Chất béo (g)</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="foodsTableBody">
+                        <c:choose>
+                            <c:when test="${not empty foodList}">
+                                <c:forEach var="food" items="${foodList}">
+                                    <tr class="food-row">
+                                        <td>
+                                            <input type="checkbox" class="food-checkbox" name="foodSelect" value="${food.id}" onchange="updateFoodButtonStates()">
+                                        </td>
+                                        <td>${food.id}</td>
+                                        <td>
+                                            <strong>${food.foodName}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="type-badge type-${food.type.toLowerCase()}">${food.type}</span>
+                                        </td>
+                                        <td>${food.calories} kcal</td>
+                                        <td>${food.protein}</td>
+                                        <td>${food.carbs}</td>
+                                        <td>${food.fat}</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn edit" onclick="editFood('${food.id}')">
+                                                    <i class="fas fa-edit"></i>
+                                                    Sửa
+                                                </button>
+                                                <button class="action-btn delete" onclick="deleteFood('${food.id}')">
+                                                    <i class="fas fa-trash"></i>
+                                                    Xóa
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="9" class="text-center">
+                                        <i class="fas fa-utensils" style="font-size: 48px; color: #ccc; margin-bottom: 16px; display: block;"></i>
+                                        Chưa có dữ liệu món ăn
+                                    </td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Exercise Management -->
@@ -752,38 +860,75 @@
             
             <div class="toolbar">
                 <input type="text" class="search-box" placeholder="Tìm kiếm bài tập..." onkeyup="searchExercises(this.value)" id="exerciseSearchInput">
-                <a href="admin_add_exercise.jsp" class="btn btn-primary">
+                <a href="${pageContext.request.contextPath}/admin/exercise/add" class="btn btn-primary">
                     <i class="fas fa-plus"></i>
                     Thêm bài tập
                 </a>
-                
-             
             </div>
 
-            <table class="user-table">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox" id="selectAllExercises" onchange="toggleSelectAllExercises()">
-                        </th>
-                        <th>ID</th>
-                        <th>Tên bài tập</th>
-                        <th>Loại</th>
-                        <th>Nhóm cơ</th>
-                        <th>Độ khó</th>
-                        <th>Calo/giờ</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="exercisesTableBody">
-                    <tr>
-                        <td colspan="8" class="text-center">
-                            <i class="fas fa-dumbbell" style="font-size: 48px; color: #ccc; margin-bottom: 16px; display: block;"></i>
-                            Chưa có dữ liệu bài tập
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="user-table-wrapper">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAllExercises" onchange="toggleSelectAllExercises()">
+                            </th>
+                            <th>ID</th>
+                            <th>Tên bài tập</th>
+                            <th>Loại</th>
+                            <th>Nhóm cơ</th>
+                            <th>Độ khó</th>
+                            <th>Calo/giờ</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exercisesTableBody">
+                        <c:choose>
+                            <c:when test="${not empty exerciseList}">
+                                <c:forEach var="exercise" items="${exerciseList}">
+                                    <tr class="exercise-row">
+                                        <td>
+                                            <input type="checkbox" class="exercise-checkbox" name="exerciseSelect" value="${exercise.id}" onchange="updateExerciseButtonStates()">
+                                        </td>
+                                        <td>${exercise.id}</td>
+                                        <td>
+                                            <strong>${exercise.exerciseName}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="type-badge type-${exercise.type.toLowerCase()}">${exercise.type}</span>
+                                        </td>
+                                        <td>${exercise.muscleGroup}</td>
+                                        <td>
+                                            <span class="difficulty-badge difficulty-${exercise.difficulty.toLowerCase()}">${exercise.difficulty}</span>
+                                        </td>
+                                        <td>${exercise.caloriesPerHour} kcal</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="action-btn edit" onclick="editExercise('${exercise.id}')">
+                                                    <i class="fas fa-edit"></i>
+                                                    Sửa
+                                                </button>
+                                                <button class="action-btn delete" onclick="deleteExercise('${exercise.id}')">
+                                                    <i class="fas fa-trash"></i>
+                                                    Xóa
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                        <i class="fas fa-dumbbell" style="font-size: 48px; color: #ccc; margin-bottom: 16px; display: block;"></i>
+                                        Chưa có dữ liệu bài tập
+                                    </td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -890,6 +1035,7 @@
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAll.checked;
             });
+            updateFoodButtonStates();
         }
 
         function toggleSelectAllExercises() {
@@ -899,87 +1045,41 @@
             checkboxes.forEach(checkbox => {
                 checkbox.checked = selectAll.checked;
             });
+            updateExerciseButtonStates();
         }
 
-        // JavaScript functions cho toolbar actions
+        // User management functions
+        function editUser(userId) {
+            window.location.href = '${pageContext.request.contextPath}/admin/user/edit?id=' + userId;
+        }
 
-
-       
-    	  function editUser(userId) {
-    	  window.location.href = '${pageContext.request.contextPath}/admin/user/edit?id=' + userId;
-	
-       	 }
         function deleteUser(userId) {
             if (confirm('Bạn có chắc chắn muốn xóa user này?')) {
-            	window.location.href = 'admin/user/delete?id=' + userId;
+                window.location.href = '${pageContext.request.contextPath}/admin/user/delete?id=' + userId;
             }
         }
 
         // Food management functions
         function editFood(foodId) {
-            if (confirm('Bạn có chắc muốn chỉnh sửa món ăn này?')) {
-                window.location.href = `admin_edit_food.jsp?id=${foodId}`;
-            }
+            window.location.href = '${pageContext.request.contextPath}/admin/food/edit?id=' + foodId;
         }
 
         function deleteFood(foodId) {
-            if (confirm('Bạn có chắc muốn xóa món ăn này? Hành động này không thể hoàn tác.')) {
-                fetch(`admin-delete-food?id=${foodId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Xóa món ăn thành công!');
-                        location.reload();
-                    } else {
-                        alert('Lỗi khi xóa món ăn: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Có lỗi xảy ra khi xóa món ăn.');
-                });
+            if (confirm('Bạn có chắc chắn muốn xóa món ăn này?')) {
+                window.location.href = '${pageContext.request.contextPath}/admin/food/delete?id=' + foodId;
             }
         }
-
-   
-
 
         // Exercise management functions
         function editExercise(exerciseId) {
-            if (confirm('Bạn có chắc muốn chỉnh sửa bài tập này?')) {
-                window.location.href = `admin_edit_exercise.jsp?id=${exerciseId}`;
-            }
+            window.location.href = '${pageContext.request.contextPath}/admin/exercise/edit?id=' + exerciseId;
         }
 
         function deleteExercise(exerciseId) {
-            if (confirm('Bạn có chắc muốn xóa bài tập này? Hành động này không thể hoàn tác.')) {
-                fetch(`admin-delete-exercise?id=${exerciseId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Xóa bài tập thành công!');
-                        location.reload();
-                    } else {
-                        alert('Lỗi khi xóa bài tập: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Có lỗi xảy ra khi xóa bài tập.');
-                });
+            if (confirm('Bạn có chắc chắn muốn xóa bài tập này?')) {
+                window.location.href = '${pageContext.request.contextPath}/admin/exercise/delete?id=' + exerciseId;
             }
         }
-
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
@@ -991,9 +1091,9 @@
                 if (e.target.classList.contains('user-checkbox')) {
                     updateUserButtonStates();
                 } else if (e.target.classList.contains('food-checkbox')) {
-                    // updateSelectAllState('selectAllFoods', '.food-checkbox'); // No select all for foods
+                    updateFoodButtonStates();
                 } else if (e.target.classList.contains('exercise-checkbox')) {
-                    // updateSelectAllState('selectAllExercises', '.exercise-checkbox'); // No select all for exercises
+                    updateExerciseButtonStates();
                 }
             });
         });
@@ -1003,10 +1103,40 @@
             const checkboxes = document.querySelectorAll('.user-checkbox');
             const checkedBoxes = document.querySelectorAll('.user-checkbox:checked');
             
-            const hasSelection = checkedBoxes.length > 0;
-            document.getElementById('editUserBtn').disabled = !hasSelection;
-            document.getElementById('deleteUserBtn').disabled = !hasSelection;
+            if (checkedBoxes.length === 0) {
+                selectAll.indeterminate = false;
+                selectAll.checked = false;
+            } else if (checkedBoxes.length === checkboxes.length) {
+                selectAll.indeterminate = false;
+                selectAll.checked = true;
+            } else {
+                selectAll.indeterminate = true;
+                selectAll.checked = false;
+            }
+        }
 
+        function updateFoodButtonStates() {
+            const selectAll = document.getElementById('selectAllFoods');
+            const checkboxes = document.querySelectorAll('.food-checkbox');
+            const checkedBoxes = document.querySelectorAll('.food-checkbox:checked');
+            
+            if (checkedBoxes.length === 0) {
+                selectAll.indeterminate = false;
+                selectAll.checked = false;
+            } else if (checkedBoxes.length === checkboxes.length) {
+                selectAll.indeterminate = false;
+                selectAll.checked = true;
+            } else {
+                selectAll.indeterminate = true;
+                selectAll.checked = false;
+            }
+        }
+
+        function updateExerciseButtonStates() {
+            const selectAll = document.getElementById('selectAllExercises');
+            const checkboxes = document.querySelectorAll('.exercise-checkbox');
+            const checkedBoxes = document.querySelectorAll('.exercise-checkbox:checked');
+            
             if (checkedBoxes.length === 0) {
                 selectAll.indeterminate = false;
                 selectAll.checked = false;

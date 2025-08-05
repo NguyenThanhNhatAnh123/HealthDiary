@@ -49,7 +49,7 @@ public class AdminUserEditServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/admin/users");
         } catch (Exception e) {
             e.printStackTrace();
-            request.getSession().setAttribute("error", "Lỗi khi tải thông tin user");
+            request.getSession().setAttribute("error", "Lỗi khi tải thông tin user 1");
             response.sendRedirect(request.getContextPath() + "/admin/users");
         }
     }
@@ -93,7 +93,7 @@ public class AdminUserEditServlet extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            request.getSession().setAttribute("error", "Lỗi khi tải thông tin user");
+            request.getSession().setAttribute("error", "Lỗi khi tải thông tin user 2");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
         }

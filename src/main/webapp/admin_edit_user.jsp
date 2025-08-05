@@ -307,6 +307,17 @@
             gap: 12px;
         }
 
+        /* Debug Info */
+        .debug-info {
+            background: #fff3e0;
+            border: 1px solid #ffb74d;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -341,21 +352,6 @@
                 justify-content: center;
             }
         }
-
-        /* Loading animation */
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        /* Hover effects */
-        .form-group:hover .form-label {
-            color: #1565c0;
-        }
-
-        /* Custom focus ring */
-        .form-group:focus-within .form-label {
-            color: #1565c0;
-        }
     </style>
 </head>
 <body>
@@ -376,6 +372,21 @@
             </div>
         </div>
 
+        <!-- Debug Info (remove in production) -->
+        <%-- 
+        <div class="debug-info">
+            <strong>Debug Info:</strong><br>
+            Request URI: ${pageContext.request.requestURI}<br>
+            Context Path: ${pageContext.request.contextPath}<br>
+            User ID Parameter: ${param.id}<br>
+            User Object: ${not empty user ? 'Found' : 'Not Found'}<br>
+            <c:if test="${not empty user}">
+                User ID: ${user.id}<br>
+                User Name: ${user.fullName}<br>
+                User Email: ${user.email}
+            </c:if>
+        </div>
+		--%>
         <!-- Form Container -->
         <div class="edit-form-container">
             <div class="form-header">
@@ -401,6 +412,7 @@
                 <c:if test="${not empty user}">
                     <form action="${pageContext.request.contextPath}/admin/user/edit" method="post">
                         <input type="hidden" name="userId" value="${user.id}">
+                        
                         <!-- Thông tin cơ bản -->
                         <div class="section-title">
                             <i class="fas fa-user"></i>
@@ -443,6 +455,7 @@
                                 </select>
                             </div>
                         </div>
+                        
                         <!-- Thông tin thể chất -->
                         <div class="section-title">
                             <i class="fas fa-heartbeat"></i>
@@ -471,6 +484,7 @@
                             </label>
                             <textarea name="goal" class="form-input" placeholder="Nhập mục tiêu sức khỏe của user...">${user.goal}</textarea>
                         </div>
+                        
                         <!-- Thay đổi mật khẩu -->
                         <div class="password-section">
                             <h4>
@@ -498,6 +512,7 @@
                                 Mật khẩu phải có ít nhất 4 ký tự. Nếu không nhập, mật khẩu hiện tại sẽ được giữ nguyên.
                             </div>
                         </div>
+                        
                         <div class="action-buttons">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i>
@@ -510,6 +525,7 @@
                         </div>
                     </form>
                 </c:if>
+                
                 <c:if test="${empty user}">
                     <div class="error-message">
                         <i class="fas fa-exclamation-circle"></i>
@@ -527,35 +543,7 @@
     </div>
 
     <script>
-        // JavaScript functions cho form validation và submission
-
-        // Password confirmation validation
-        document.querySelector('input[name="confirmPassword"]').addEventListener('input', function() {
-            const password = document.querySelector('input[name="password"]').value;
-            const confirmPassword = this.value;
-            
-            if (confirmPassword && password !== confirmPassword) {
-                this.style.borderColor = '#d32f2f';
-                this.setCustomValidity('Mật khẩu xác nhận không khớp!');
-            } else {
-                this.style.borderColor = '#e3f2fd';
-                this.setCustomValidity('');
-            }
-        });
-
-        // Real-time password validation
-        document.querySelector('input[name="password"]').addEventListener('input', function() {
-            const confirmPassword = document.querySelector('input[name="confirmPassword"]');
-            if (confirmPassword.value && this.value !== confirmPassword.value) {
-                confirmPassword.style.borderColor = '#d32f2f';
-                confirmPassword.setCustomValidity('Mật khẩu xác nhận không khớp!');
-            } else if (confirmPassword.value) {
-                confirmPassword.style.borderColor = '#e3f2fd';
-                confirmPassword.setCustomValidity('');
-            }
-        });
-
-        // Form validation
+        // Form validation functions
         function validateForm() {
             const fullName = document.querySelector('input[name="fullName"]').value.trim();
             const email = document.querySelector('input[name="email"]').value.trim();
@@ -596,118 +584,57 @@
             return true;
         }
 
-        // Form submission with loading state
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!validateForm()) {
-                return;
-            }
-
-            const submitBtn = document.querySelector('.btn-primary');
-            const originalText = submitBtn.innerHTML;
-            
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
-            submitBtn.disabled = true;
-
-            // Simulate form submission (replace with actual form submission)
-            setTimeout(() => {
-                // Show success message
-                showAlert('success', 'Cập nhật user thành công!');
+        // Password confirmation validation
+        const confirmPasswordInput = document.querySelector('input[name="confirmPassword"]');
+        if (confirmPasswordInput) {
+            confirmPasswordInput.addEventListener('input', function() {
+                const password = document.querySelector('input[name="password"]').value;
+                const confirmPassword = this.value;
                 
-                // Reset form state
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Optionally redirect after success
-                setTimeout(() => {
-                    window.location.href = 'admin_user_list.jsp';
-                }, 2000);
-            }, 1500);
-        });
-
-        // Alert function
-        function showAlert(type, message) {
-            // Create alert element
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 16px 20px;
-                border-radius: 12px;
-                color: ${type === 'success' ? '#2e7d32' : '#d32f2f'};
-                background: ${type === 'success' ? '#e8f5e8' : '#ffebee'};
-                border-left: 4px solid ${type === 'success' ? '#4caf50' : '#d32f2f'};
-                z-index: 1000;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                font-weight: 500;
-            `;
-            
-            alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-                <span>${message}</span>
-            `;
-            
-            document.body.appendChild(alertDiv);
-            
-            // Remove alert after 3 seconds
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 3000);
-        }
-
-        // Auto-save draft functionality
-        let autoSaveTimer;
-        const formInputs = document.querySelectorAll('input, select, textarea');
-        
-        formInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                clearTimeout(autoSaveTimer);
-                autoSaveTimer = setTimeout(() => {
-                    saveFormDraft();
-                }, 2000); // Auto-save after 2 seconds of inactivity
+                if (confirmPassword && password !== confirmPassword) {
+                    this.style.borderColor = '#d32f2f';
+                    this.setCustomValidity('Mật khẩu xác nhận không khớp!');
+                } else {
+                    this.style.borderColor = '#e3f2fd';
+                    this.setCustomValidity('');
+                }
             });
-        });
-
-        function saveFormDraft() {
-            const formData = new FormData(document.querySelector('form'));
-            const draft = {};
-            
-            for (let [key, value] of formData.entries()) {
-                draft[key] = value;
-            }
-            
-            localStorage.setItem('userEditDraft', JSON.stringify(draft));
-            console.log('Form draft saved');
         }
 
-        function loadFormDraft() {
-            const draft = localStorage.getItem('userEditDraft');
-            if (draft) {
-                const formData = JSON.parse(draft);
-                Object.keys(formData).forEach(key => {
-                    const input = document.querySelector(`[name="${key}"]`);
-                    if (input && !input.value) {
-                        input.value = formData[key];
-                    }
-                });
-            }
+        // Real-time password validation
+        const passwordInput = document.querySelector('input[name="password"]');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                const confirmPassword = document.querySelector('input[name="confirmPassword"]');
+                if (confirmPassword.value && this.value !== confirmPassword.value) {
+                    confirmPassword.style.borderColor = '#d32f2f';
+                    confirmPassword.setCustomValidity('Mật khẩu xác nhận không khớp!');
+                } else if (confirmPassword.value) {
+                    confirmPassword.style.borderColor = '#e3f2fd';
+                    confirmPassword.setCustomValidity('');
+                }
+            });
         }
 
-        // Load draft on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadFormDraft();
-        });
-
-        // Clear draft when form is successfully submitted
-        document.querySelector('form').addEventListener('submit', function() {
-            localStorage.removeItem('userEditDraft');
-        });
+        // Form submission with validation (FIXED - không preventDefault)
+        const form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault(); // Chỉ preventDefault khi validation thất bại
+                    return false;
+                }
+                
+                // Disable submit button to prevent double submission
+                const submitBtn = document.querySelector('.btn-primary');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
+                submitBtn.disabled = true;
+                
+                // Form sẽ được submit bình thường
+                return true;
+            });
+        }
     </script>
 </body>
 </html>

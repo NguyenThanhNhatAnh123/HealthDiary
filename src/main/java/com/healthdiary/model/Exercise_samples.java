@@ -3,23 +3,32 @@ package com.healthdiary.model;
 public class Exercise_samples {
     private int id;
     private String exerciseName;
-    private int caloriesBurnedPerMin;
+    private String type;
+    private String muscleGroup;
+    private String difficulty;
+    private int caloriesPerHour;
 
     // Default constructor
     public Exercise_samples() {
     }
 
     // Constructor with all fields except id
-    public Exercise_samples(String exerciseName, int caloriesBurnedPerMin) {
+    public Exercise_samples(String exerciseName, String type, String muscleGroup, String difficulty, int caloriesPerHour) {
         this.exerciseName = exerciseName;
-        this.caloriesBurnedPerMin = caloriesBurnedPerMin;
+        this.type = type;
+        this.muscleGroup = muscleGroup;
+        this.difficulty = difficulty;
+        this.caloriesPerHour = caloriesPerHour;
     }
 
     // Constructor with all fields
-    public Exercise_samples(int id, String exerciseName, int caloriesBurnedPerMin) {
+    public Exercise_samples(int id, String exerciseName, String type, String muscleGroup, String difficulty, int caloriesPerHour) {
         this.id = id;
         this.exerciseName = exerciseName;
-        this.caloriesBurnedPerMin = caloriesBurnedPerMin;
+        this.type = type;
+        this.muscleGroup = muscleGroup;
+        this.difficulty = difficulty;
+        this.caloriesPerHour = caloriesPerHour;
     }
 
     // Getters and Setters
@@ -39,12 +48,36 @@ public class Exercise_samples {
         this.exerciseName = exerciseName;
     }
 
-    public int getCaloriesBurnedPerMin() {
-        return caloriesBurnedPerMin;
+    public String getType() {
+        return type;
     }
 
-    public void setCaloriesBurnedPerMin(int caloriesBurnedPerMin) {
-        this.caloriesBurnedPerMin = caloriesBurnedPerMin;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getMuscleGroup() {
+        return muscleGroup;
+    }
+
+    public void setMuscleGroup(String muscleGroup) {
+        this.muscleGroup = muscleGroup;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public int getCaloriesPerHour() {
+        return caloriesPerHour;
+    }
+
+    public void setCaloriesPerHour(int caloriesPerHour) {
+        this.caloriesPerHour = caloriesPerHour;
     }
 
     @Override
@@ -52,7 +85,10 @@ public class Exercise_samples {
         return "Exercise_samples{" +
                 "id=" + id +
                 ", exerciseName='" + exerciseName + '\'' +
-                ", caloriesBurnedPerMin=" + caloriesBurnedPerMin +
+                ", type='" + type + '\'' +
+                ", muscleGroup='" + muscleGroup + '\'' +
+                ", difficulty='" + difficulty + '\'' +
+                ", caloriesPerHour=" + caloriesPerHour +
                 '}';
     }
 }
