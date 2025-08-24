@@ -2,6 +2,7 @@ package com.healthdiary.dao;
 
 import com.healthdiary.model.User;
 import com.healthdiary.util.DatabaseUtil;
+import com.healthdiary.util.LogUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class UserDAO {
             return pstmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LogUtil.logError("UserDAO", "createUser", "Failed to create user", e);
             return false;
         }
     }
@@ -48,7 +49,7 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LogUtil.logError("UserDAO", "getUserByEmail", "Failed to get user by email", e);
         }
 
         return null;
