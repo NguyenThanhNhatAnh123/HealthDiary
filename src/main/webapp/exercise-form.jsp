@@ -65,6 +65,9 @@
 
             <!-- Exercise Form -->
             <form id="exerciseForm" action="exercise-form" method="post">
+                <!-- Hidden field for user ID -->
+                <input type="hidden" name="userId" value="${sessionScope.user.id}">
+                
                 <div class="section-header">
                     <i class="fas fa-info-circle"></i>
                     Thông tin bài tập
@@ -148,7 +151,7 @@
                     <div class="form-group">
                         <label for="weight">Cân nặng (kg)</label>
                         <input type="number" id="weight" name="weight" min="30" max="200" step="0.1"
-                               placeholder="70" value="${user.weight}" oninput="calculateCalories()">
+                               placeholder="70" value="${sessionScope.user.weight}" oninput="calculateCalories()">
                     </div>
                 </div>
 
@@ -347,10 +350,13 @@
             }, 5000);
         }
 
-        // Check if user is logged in
-        <c:if test="${empty user}">
+        // Check if user is logged in - redirect to login if no user session
+        <c:if test="${empty sessionScope.user}">
             window.location.href = 'login';
         </c:if>
+        
+        // Store user ID for form operations
+        const currentUserId = '${sessionScope.user.id}';
 
         // Smooth animations
         document.addEventListener('DOMContentLoaded', function() {

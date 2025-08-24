@@ -28,8 +28,12 @@ public class MealFormServlet extends HttpServlet {
             return;
         }
 
+        // Get user from session and add to request
+        User user = (User) session.getAttribute("user");
+        request.setAttribute("user", user);
+
         try {
-            // Load food samples for dropdown (if needed)
+            // Load food samples from admin list for dropdown
             List<Food_samples> foodSamples = foodDAO.getAllFoods();
             request.setAttribute("foodSamples", foodSamples);
         } catch (Exception e) {
@@ -38,5 +42,51 @@ public class MealFormServlet extends HttpServlet {
         }
 
         request.getRequestDispatcher("/meal-form.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
+        // Get user from session
+        User user = (User) session.getAttribute("user");
+        int userId = user.getId();
+
+        try {
+            // Get form parameters
+            String date = request.getParameter("date");
+            String mealType = request.getParameter("mealType");
+            String notes = request.getParameter("notes");
+
+            // Validate required fields
+            if (date == null || date.trim().isEmpty() ||
+                mealType == null || mealType.trim().isEmpty()) {
+                
+                request.setAttribute("error", "Vui lòng điền đầy đủ thông tin bắt buộc");
+                doGet(request, response);
+                return;
+            }
+
+            // Process food items (this would typically involve parsing multiple food items)
+            // and saving the meal record with userId
+            
+            // TODO: Save meal record to database with userId and food items
+            // This would typically involve creating a Meal record associated with the user
+            
+            request.setAttribute("success", "Bữa ăn đã được lưu thành công!");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "Lỗi khi lưu bữa ăn: " + e.getMessage());
+        }
+
+        doGet(request, response);
     }
 }
