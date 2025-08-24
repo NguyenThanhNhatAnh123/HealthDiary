@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -556,6 +557,9 @@
 
             <!-- Meal Form -->
             <form action="meal" method="post" id="mealForm">
+                <!-- Hidden field for user ID -->
+                <input type="hidden" name="userId" value="${sessionScope.user.id}">
+                
                 <!-- Basic Information -->
                 <div class="section-header">
                     <i class="fas fa-clock"></i>
@@ -651,18 +655,19 @@
     <script>
         let foodItemCount = 0;
         
-        // Sample food items for suggestions
+        // Food items from admin list
         const foodSamples = [
-            { name: 'Cơm trắng', calories: 130, unit: 'g' },
-            { name: 'Phở bò', calories: 350, unit: 'tô' },
-            { name: 'Bánh mì', calories: 250, unit: 'ổ' },
-            { name: 'Trứng gà', calories: 70, unit: 'quả' },
-            { name: 'Chuối', calories: 90, unit: 'quả' },
-            { name: 'Táo', calories: 80, unit: 'quả' },
-            { name: 'Sữa tươi', calories: 60, unit: 'ml' },
-            { name: 'Thịt heo', calories: 250, unit: 'g' },
-            { name: 'Thịt gà', calories: 165, unit: 'g' },
-            { name: 'Cá thu', calories: 150, unit: 'g' }
+            <c:forEach var="food" items="${foodSamples}" varStatus="status">
+            { 
+                name: '${fn:escapeXml(food.foodName)}', 
+                calories: ${food.calories}, 
+                unit: 'g',
+                type: '${fn:escapeXml(food.type)}',
+                protein: ${food.protein},
+                carbs: ${food.carbs},
+                fat: ${food.fat}
+            }<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
         ];
 
         function selectMealType(mealType) {
@@ -873,6 +878,14 @@
             }
         });
         
+        // Check if user is logged in - redirect to login if no user session
+        <c:if test="${empty sessionScope.user}">
+            window.location.href = 'login';
+        </c:if>
+        
+        // Store user ID for form operations
+        const currentUserId = '${sessionScope.user.id}';
+
         // Add first food item automatically if empty
         window.onload = function() {
             const container = document.getElementById('foodItemsContainer');
