@@ -81,16 +81,18 @@
                     <select id="exerciseType" name="exerciseType" required onchange="selectExerciseType(this.value)">
                         <option value="">Chọn bài tập</option>
                         <!-- Dynamically populated from server -->
-                        <c:forEach var="exercise" items="${exerciseList}">
-                            <option value="${exercise.id}" 
-                                    data-calories="${exercise.caloriesPerHour}" 
-                                    data-name="${fn:escapeXml(exercise.exerciseName)}"
-                                    data-type="${fn:escapeXml(exercise.type)}"
-                                    data-muscle="${fn:escapeXml(exercise.muscleGroup)}"
-                                    data-difficulty="${fn:escapeXml(exercise.difficulty)}">
-                                ${fn:escapeXml(exercise.exerciseName)}
-                            </option>
-                        </c:forEach>
+                        <c:if test="${not empty exerciseList}">
+                            <c:forEach var="exercise" items="${exerciseList}">
+                                <option value="${exercise.id}" 
+                                        data-calories="${exercise.caloriesPerHour}" 
+                                        data-name="${fn:escapeXml(exercise.exerciseName)}"
+                                        data-type="${fn:escapeXml(exercise.type)}"
+                                        data-muscle="${fn:escapeXml(exercise.muscleGroup)}"
+                                        data-difficulty="${fn:escapeXml(exercise.difficulty)}">
+                                    ${fn:escapeXml(exercise.exerciseName)}
+                                </option>
+                            </c:forEach>
+                        </c:if>
                         <option value="other">Khác</option>
                     </select>
                 </div>
@@ -126,13 +128,13 @@
                 <div class="form-group">
                     <label>Cường độ <span class="required">*</span></label>
                     <div class="intensity-selector">
-                        <div class="intensity-option low" onclick="selectIntensity('low')" data-intensity="low" tabindex="0">
+                        <div class="intensity-option low" onclick="selectIntensity('low', event)" data-intensity="low" tabindex="0">
                             🟢 Nhẹ
                         </div>
-                        <div class="intensity-option medium" onclick="selectIntensity('medium')" data-intensity="medium" tabindex="0">
+                        <div class="intensity-option medium" onclick="selectIntensity('medium', event)" data-intensity="medium" tabindex="0">
                             🟡 Vừa
                         </div>
-                        <div class="intensity-option high" onclick="selectIntensity('high')" data-intensity="high" tabindex="0">
+                        <div class="intensity-option high" onclick="selectIntensity('high', event)" data-intensity="high" tabindex="0">
                             🔴 Mạnh
                         </div>
                     </div>
@@ -221,7 +223,7 @@
             calculateCalories();
         }
 
-        function selectIntensity(intensity) {
+        function selectIntensity(intensity, event) {
             document.querySelectorAll('.intensity-option').forEach(option => {
                 option.classList.remove('selected');
             });
@@ -369,7 +371,9 @@
             // Khởi tạo cường độ mặc định
             setTimeout(() => {
                 if (!document.getElementById('intensity').value) {
-                    selectIntensity('medium');
+                    // Set medium intensity as default without triggering the visual selection
+                    document.getElementById('intensity').value = 'medium';
+                    document.querySelector('.intensity-option.medium').classList.add('selected');
                 }
             }, 300);
         });

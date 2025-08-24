@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -651,18 +652,18 @@
     <script>
         let foodItemCount = 0;
         
-        // Sample food items for suggestions
+        // Food items from server (admin list)
         const foodSamples = [
-            { name: 'Cơm trắng', calories: 130, unit: 'g' },
-            { name: 'Phở bò', calories: 350, unit: 'tô' },
-            { name: 'Bánh mì', calories: 250, unit: 'ổ' },
-            { name: 'Trứng gà', calories: 70, unit: 'quả' },
-            { name: 'Chuối', calories: 90, unit: 'quả' },
-            { name: 'Táo', calories: 80, unit: 'quả' },
-            { name: 'Sữa tươi', calories: 60, unit: 'ml' },
-            { name: 'Thịt heo', calories: 250, unit: 'g' },
-            { name: 'Thịt gà', calories: 165, unit: 'g' },
-            { name: 'Cá thu', calories: 150, unit: 'g' }
+            <c:if test="${not empty foodList}">
+                <c:forEach var="food" items="${foodList}" varStatus="status">
+                    { 
+                        name: '${fn:escapeXml(food.foodName)}', 
+                        calories: ${food.calories}, 
+                        unit: 'g',
+                        id: ${food.id}
+                    }<c:if test="${!status.last}">,</c:if>
+                </c:forEach>
+            </c:if>
         ];
 
         function selectMealType(mealType) {
@@ -882,6 +883,11 @@
                 addFoodItem();
             }
         };
+        
+        // Check if user is logged in
+        <c:if test="${empty user}">
+            window.location.href = 'login';
+        </c:if>
     </script>
 </body>
 </html>
