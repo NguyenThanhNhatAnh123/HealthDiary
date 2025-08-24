@@ -10,7 +10,374 @@
     <title>Ghi nhận bài tập - Health Diary</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ... (giữ nguyên phần CSS) ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(25, 118, 210, 0.1);
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #1976d2;
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            background: #e3f2fd;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 20px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb a {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            background: #e3f2fd;
+            transform: translateY(-1px);
+        }
+
+        .breadcrumb a.logout {
+            color: #d32f2f;
+        }
+
+        .breadcrumb a.logout:hover {
+            background: #ffebee;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.12);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1976d2, #42a5f5, #1976d2);
+        }
+
+        /* Section Headers */
+        .section-header {
+            color: #1976d2;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 32px 0 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-header:first-child {
+            margin-top: 0;
+        }
+
+        .section-header i {
+            background: #e3f2fd;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group label {
+            color: #1976d2;
+            font-weight: 600;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #d32f2f;
+            font-weight: 700;
+        }
+
+        /* Form Controls */
+        input[type="datetime-local"], 
+        input[type="number"], 
+        input[type="text"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e3f2fd;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input[type="datetime-local"]:focus, 
+        input[type="number"]:focus, 
+        input[type="text"]:focus, 
+        select:focus, 
+        textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+            transform: translateY(-1px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* Exercise Info Display */
+        .exercise-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #e3f2fd;
+            display: none;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e3f2fd;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #1976d2;
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .info-item span {
+            color: #424242;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Intensity Selector */
+        .intensity-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .intensity-option {
+            padding: 20px 15px;
+            border: 2px solid #e3f2fd;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            text-align: center;
+            font-weight: 600;
+            color: #424242;
+        }
+
+        .intensity-option:hover {
+            border-color: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.2);
+        }
+
+        .intensity-option.selected {
+            border-color: #1976d2;
+            background: #e3f2fd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
+        }
+
+        /* Calorie Estimation */
+        .calorie-estimation {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 25px 0;
+            text-align: center;
+            border: 2px solid #42a5f5;
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.1);
+        }
+
+        .estimated-calories {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1976d2;
+            text-shadow: 1px 1px 2px rgba(25, 118, 210, 0.1);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #e3f2fd;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #1976d2;
+            border: 2px solid #1976d2;
+        }
+
+        .btn-secondary:hover {
+            background: #e3f2fd;
+            transform: translateY(-1px);
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #d32f2f;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .alert-success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .form-container {
+                padding: 24px;
+                margin: 16px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .intensity-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -25,7 +392,7 @@
                 <span class="separator">•</span>
                 <a href="profile"><i class="fas fa-user"></i> Hồ sơ</a>
                 <span class="separator">•</span>
-                <a href="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                <a href="logout" class="logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
             </div>
         </div>
 
@@ -148,7 +515,7 @@
                     <div class="form-group">
                         <label for="weight">Cân nặng (kg)</label>
                         <input type="number" id="weight" name="weight" min="30" max="200" step="0.1"
-                               placeholder="70" value="${user.weight}" oninput="calculateCalories()">
+                               placeholder="70" value="${user.weightKg}" oninput="calculateCalories()">
                     </div>
                 </div>
 

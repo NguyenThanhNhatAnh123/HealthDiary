@@ -651,19 +651,35 @@
     <script>
         let foodItemCount = 0;
         
-        // Sample food items for suggestions
+        // Food samples from admin database
         const foodSamples = [
-            { name: 'Cơm trắng', calories: 130, unit: 'g' },
-            { name: 'Phở bò', calories: 350, unit: 'tô' },
-            { name: 'Bánh mì', calories: 250, unit: 'ổ' },
-            { name: 'Trứng gà', calories: 70, unit: 'quả' },
-            { name: 'Chuối', calories: 90, unit: 'quả' },
-            { name: 'Táo', calories: 80, unit: 'quả' },
-            { name: 'Sữa tươi', calories: 60, unit: 'ml' },
-            { name: 'Thịt heo', calories: 250, unit: 'g' },
-            { name: 'Thịt gà', calories: 165, unit: 'g' },
-            { name: 'Cá thu', calories: 150, unit: 'g' }
+            <c:forEach var="food" items="${foodSamples}" varStatus="status">
+                { 
+                    name: '${fn:escapeXml(food.foodName)}', 
+                    calories: ${food.calories}, 
+                    unit: 'g',
+                    protein: ${food.protein},
+                    carbs: ${food.carbs},
+                    fat: ${food.fat}
+                }<c:if test="${!status.last}">,</c:if>
+            </c:forEach>
         ];
+
+        // Fallback food samples if none from database
+        if (foodSamples.length === 0) {
+            foodSamples.push(
+                { name: 'Cơm trắng', calories: 130, unit: 'g', protein: 2.7, carbs: 28, fat: 0.3 },
+                { name: 'Phở bò', calories: 350, unit: 'tô', protein: 25, carbs: 45, fat: 8 },
+                { name: 'Bánh mì', calories: 250, unit: 'ổ', protein: 8, carbs: 45, fat: 3 },
+                { name: 'Trứng gà', calories: 70, unit: 'quả', protein: 6, carbs: 1, fat: 5 },
+                { name: 'Chuối', calories: 90, unit: 'quả', protein: 1, carbs: 23, fat: 0.3 },
+                { name: 'Táo', calories: 80, unit: 'quả', protein: 0.5, carbs: 21, fat: 0.3 },
+                { name: 'Sữa tươi', calories: 60, unit: 'ml', protein: 3, carbs: 5, fat: 3 },
+                { name: 'Thịt heo', calories: 250, unit: 'g', protein: 26, carbs: 0, fat: 15 },
+                { name: 'Thịt gà', calories: 165, unit: 'g', protein: 31, carbs: 0, fat: 3.6 },
+                { name: 'Cá thu', calories: 150, unit: 'g', protein: 25, carbs: 0, fat: 5 }
+            );
+        }
 
         function selectMealType(mealType) {
             // Remove selected class from all options
@@ -702,19 +718,19 @@
                     <div>
                         <label>Tên thực phẩm</label>
                         <div style="position: relative;">
-                            <input type="text" name="foodName_${foodItemCount}" placeholder="Nhập tên thực phẩm" 
+                            <input type="text" name="foodName" placeholder="Nhập tên thực phẩm" 
                                    onkeyup="showFoodSuggestions(this, ${foodItemCount})" required>
                             <div class="food-suggestions" id="suggestions_${foodItemCount}"></div>
                         </div>
                     </div>
                     <div>
                         <label>Số lượng</label>
-                        <input type="number" name="quantity_${foodItemCount}" min="0" step="0.1" 
+                        <input type="number" name="foodQuantity" min="0" step="0.1" 
                                placeholder="Số lượng" onchange="calculateTotalCalories()" required>
                     </div>
                     <div>
                         <label>Đơn vị</label>
-                        <select name="unit_${foodItemCount}" required>
+                        <select name="foodUnit" required>
                             <option value="">Chọn đơn vị</option>
                             <option value="g">gram (g)</option>
                             <option value="kg">kilogram (kg)</option>
@@ -732,7 +748,7 @@
                     </div>
                     <div>
                         <label>Calories (kcal)</label>
-                        <input type="number" name="calories_${foodItemCount}" min="0" 
+                        <input type="number" name="foodCalories" min="0" 
                                placeholder="Calories" onchange="calculateTotalCalories()" required>
                     </div>
                 </div>
@@ -785,10 +801,11 @@
         }
         
         function selectFoodSuggestion(name, calories, unit, itemId) {
-            document.querySelector(`input[name="foodName_${itemId}"]`).value = name;
-            document.querySelector(`input[name="calories_${itemId}"]`).value = calories;
-            document.querySelector(`select[name="unit_${itemId}"]`).value = unit;
-            document.querySelector(`input[name="quantity_${itemId}"]`).value = 1;
+            const foodItem = document.getElementById(`foodItem${itemId}`);
+            foodItem.querySelector('input[name="foodName"]').value = name;
+            foodItem.querySelector('input[name="foodCalories"]').value = calories;
+            foodItem.querySelector('select[name="foodUnit"]').value = unit;
+            foodItem.querySelector('input[name="foodQuantity"]').value = 1;
             
             document.getElementById(`suggestions_${itemId}`).style.display = 'none';
             calculateTotalCalories();
@@ -799,8 +816,8 @@
             const foodItems = document.querySelectorAll('.food-item');
             
             foodItems.forEach(item => {
-                const quantity = parseFloat(item.querySelector('input[name^="quantity_"]').value) || 0;
-                const calories = parseFloat(item.querySelector('input[name^="calories_"]').value) || 0;
+                const quantity = parseFloat(item.querySelector('input[name="foodQuantity"]').value) || 0;
+                const calories = parseFloat(item.querySelector('input[name="foodCalories"]').value) || 0;
                 totalCalories += quantity * calories;
             });
             
@@ -845,10 +862,10 @@
             // Validate each food item
             let isValid = true;
             foodItems.forEach(item => {
-                const foodName = item.querySelector('input[name^="foodName_"]').value;
-                const quantity = item.querySelector('input[name^="quantity_"]').value;
-                const unit = item.querySelector('select[name^="unit_"]').value;
-                const calories = item.querySelector('input[name^="calories_"]').value;
+                const foodName = item.querySelector('input[name="foodName"]').value;
+                const quantity = item.querySelector('input[name="foodQuantity"]').value;
+                const unit = item.querySelector('select[name="foodUnit"]').value;
+                const calories = item.querySelector('input[name="foodCalories"]').value;
                 
                 if (!foodName || !quantity || !unit || !calories) {
                     isValid = false;
@@ -866,12 +883,17 @@
         
         // Close suggestions when clicking outside
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.food-suggestions') && !e.target.matches('input[name^="foodName_"]')) {
+            if (!e.target.closest('.food-suggestions') && !e.target.matches('input[name="foodName"]')) {
                 document.querySelectorAll('.food-suggestions').forEach(suggestion => {
                     suggestion.style.display = 'none';
                 });
             }
         });
+        
+        // Check if user is logged in
+        <c:if test="${empty user}">
+            window.location.href = 'login';
+        </c:if>
         
         // Add first food item automatically if empty
         window.onload = function() {
