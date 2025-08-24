@@ -68,10 +68,18 @@ public class DiseaseManagementServlet extends HttpServlet {
             
             // Check if removing a disease
             String removeDiseaseId = request.getParameter("remove_disease");
-            if (removeDiseaseId != null) {
-                // Remove specific disease
-                diseaseDAO.removeUserDisease(user.getId(), Integer.parseInt(removeDiseaseId));
-                request.setAttribute("success", "Đã xóa tình trạng sức khỏe thành công");
+            if (removeDiseaseId != null && !removeDiseaseId.trim().isEmpty()) {
+                try {
+                    int diseaseId = Integer.parseInt(removeDiseaseId);
+                    if (diseaseId > 0) {
+                        diseaseDAO.removeUserDisease(user.getId(), diseaseId);
+                        request.setAttribute("success", "Đã xóa tình trạng sức khỏe thành công");
+                    } else {
+                        request.setAttribute("error", "ID bệnh không hợp lệ");
+                    }
+                } catch (NumberFormatException e) {
+                    request.setAttribute("error", "ID bệnh không hợp lệ");
+                }
                 doGet(request, response); // Reload the page
                 return;
             }
@@ -85,8 +93,17 @@ public class DiseaseManagementServlet extends HttpServlet {
             // Add selected diseases
             if (selectedDiseaseIds != null && selectedDiseaseIds.length > 0) {
                 for (String diseaseIdStr : selectedDiseaseIds) {
-                    int diseaseId = Integer.parseInt(diseaseIdStr);
-                    diseaseDAO.addUserDisease(user.getId(), diseaseId);
+                    if (diseaseIdStr != null && !diseaseIdStr.trim().isEmpty()) {
+                        try {
+                            int diseaseId = Integer.parseInt(diseaseIdStr);
+                            if (diseaseId > 0) {
+                                diseaseDAO.addUserDisease(user.getId(), diseaseId);
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid disease ID: " + diseaseIdStr);
+                            continue; // Skip invalid IDs
+                        }
+                    }
                 }
                 request.setAttribute("success", "Đã cập nhật tình trạng sức khỏe thành công!");
             } else {

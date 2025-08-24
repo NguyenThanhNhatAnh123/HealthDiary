@@ -70,9 +70,17 @@ public class ProfileServlet extends HttpServlet {
         String heightStr = request.getParameter("height");
         String weightStr = request.getParameter("weight");
         String goal = request.getParameter("goal");
+        
+        // Ensure parameters are not null
+        if (fullName == null) fullName = "";
+        if (ageStr == null) ageStr = "";
+        if (gender == null) gender = "";
+        if (heightStr == null) heightStr = "";
+        if (weightStr == null) weightStr = "";
+        if (goal == null) goal = "";
 
         // Validate required fields
-        if (fullName == null || fullName.trim().isEmpty()) {
+        if (fullName.trim().isEmpty()) {
             request.setAttribute("error", "Họ tên không được để trống");
             User user = null;
 			try {
@@ -92,7 +100,7 @@ public class ProfileServlet extends HttpServlet {
         Float weight = null;
 
         try {
-            if (ageStr != null && !ageStr.trim().isEmpty()) {
+            if (!ageStr.trim().isEmpty()) {
                 age = Integer.parseInt(ageStr.trim());
                 if (age <= 0 || age > 150) {
                     request.setAttribute("error", "Tuổi không hợp lệ");
@@ -103,7 +111,7 @@ public class ProfileServlet extends HttpServlet {
                 }
             }
 
-            if (heightStr != null && !heightStr.trim().isEmpty()) {
+            if (!heightStr.trim().isEmpty()) {
             	heightStr = heightStr.replaceAll("[^\\d.]", "");
                 height = Float.parseFloat(heightStr.trim());
                 if (height <= 0 || height > 300) {
@@ -115,7 +123,7 @@ public class ProfileServlet extends HttpServlet {
                 }
             }
 
-            if (weightStr != null && !weightStr.trim().isEmpty()) {
+            if (!weightStr.trim().isEmpty()) {
             	weightStr = weightStr.replaceAll("[^\\d.]", "");
                 weight = Float.parseFloat(weightStr.trim());
                 if (weight <= 0 || weight > 500) {

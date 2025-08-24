@@ -27,6 +27,12 @@ public class WeightDataApiServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             User user = (User) request.getSession().getAttribute("user");
+            
+            if (user == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\": \"Người dùng chưa đăng nhập\"}");
+                return;
+            }
 
             List<Weight_logs> weightLogs = weightDAO.getWeightHistory(user.getId(), 30); // Last 30 days
 

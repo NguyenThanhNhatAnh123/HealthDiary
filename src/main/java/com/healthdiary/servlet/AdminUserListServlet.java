@@ -24,6 +24,13 @@ public class AdminUserListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         try {
             // Lấy danh sách tất cả user
             List<User> users = userDAO.getAllUsers();
@@ -52,12 +59,24 @@ public class AdminUserListServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         String action = request.getParameter("action");
+        
+        if (action == null) {
+            response.sendRedirect(request.getContextPath() + "/admin/users");
+            return;
+        }
         
         if ("delete".equals(action)) {
             String userIdStr = request.getParameter("userId");
             
-            if (userIdStr != null) {
+            if (userIdStr != null && !userIdStr.trim().isEmpty()) {
                 try {
                     int userId = Integer.parseInt(userIdStr);
                     boolean success = userDAO.deleteUser(userId);

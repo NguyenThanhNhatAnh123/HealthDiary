@@ -13,12 +13,18 @@ public class GPTServlet extends HttpServlet {
         String question = request.getParameter("question");
 
         try {
+            if (question == null || question.trim().isEmpty()) {
+                request.setAttribute("error", "Câu hỏi không được để trống");
+                request.getRequestDispatcher("gpt.jsp").forward(request, response);
+                return;
+            }
+            
             String result = OpenAIClient.askGPT(question);
             request.setAttribute("response", result);
-            request.getRequestDispatcher("/WEB-INF/views/gpt.jsp").forward(request, response);
+            request.getRequestDispatcher("gpt.jsp").forward(request, response);
         } catch (Exception e) {
             request.setAttribute("error", "Gọi API thất bại: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/views/gpt.jsp").forward(request, response);
+            request.getRequestDispatcher("gpt.jsp").forward(request, response);
         }
     }
 }

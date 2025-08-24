@@ -28,9 +28,25 @@ public class HealthStatusServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             User user = (User) request.getSession().getAttribute("user");
+            
+            if (user == null) {
+                response.sendRedirect("login");
+                return;
+            }
+            
             String dateStr = request.getParameter("date");
             String status = request.getParameter("status");
             String notes = request.getParameter("notes");
+            
+            if (dateStr == null || dateStr.trim().isEmpty() || status == null || status.trim().isEmpty()) {
+                request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin");
+                request.getRequestDispatcher("health-form.jsp").forward(request, response);
+                return;
+            }
+            
+            if (notes == null) {
+                notes = "";
+            }
 
             // Parse date
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

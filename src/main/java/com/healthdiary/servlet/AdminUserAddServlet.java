@@ -23,12 +23,26 @@ public class AdminUserAddServlet extends HttpServlet {
     }
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         // Hiển thị form thêm user
         request.getRequestDispatcher("/admin_add_user.jsp").forward(request, response);
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         // Lấy dữ liệu từ form
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
@@ -39,18 +53,29 @@ public class AdminUserAddServlet extends HttpServlet {
         String heightStr = request.getParameter("height");
         String weightStr = request.getParameter("weight");
         String goal = request.getParameter("goal");
+        
+        // Ensure parameters are not null
+        if (fullName == null) fullName = "";
+        if (email == null) email = "";
+        if (password == null) password = "";
+        if (confirmPassword == null) confirmPassword = "";
+        if (ageStr == null) ageStr = "";
+        if (gender == null) gender = "";
+        if (heightStr == null) heightStr = "";
+        if (weightStr == null) weightStr = "";
+        if (goal == null) goal = "";
 
         // Kiểm tra dữ liệu bắt buộc
-        if (fullName == null || fullName.trim().isEmpty() ||
-                email == null || email.trim().isEmpty() ||
-                password == null || password.trim().isEmpty()) {
+        if (fullName.trim().isEmpty() ||
+                email.trim().isEmpty() ||
+                password.trim().isEmpty()) {
             request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin bắt buộc");
             request.getRequestDispatcher("/admin_add_user.jsp").forward(request, response);
             return;
         }
 
         // Kiểm tra email hợp lệ
-        if (!authService.isValidEmail(email.trim())) {
+        if (!authService.isValidEmail(email)) {
             request.setAttribute("error", "Email không hợp lệ");
             request.getRequestDispatcher("/admin_add_user.jsp").forward(request, response);
             return;
@@ -64,7 +89,7 @@ public class AdminUserAddServlet extends HttpServlet {
         }
 
         // Kiểm tra xác nhận mật khẩu
-        if (confirmPassword == null || !password.equals(confirmPassword)) {
+        if (!password.equals(confirmPassword)) {
             request.setAttribute("error", "Mật khẩu xác nhận không khớp");
             request.getRequestDispatcher("/admin_add_user.jsp").forward(request, response);
             return;
@@ -75,13 +100,13 @@ public class AdminUserAddServlet extends HttpServlet {
         Float height = null;
         Float weight = null;
         try {
-            if (ageStr != null && !ageStr.trim().isEmpty()) {
+            if (!ageStr.trim().isEmpty()) {
                 age = Integer.parseInt(ageStr.trim());
             }
-            if (heightStr != null && !heightStr.trim().isEmpty()) {
+            if (!heightStr.trim().isEmpty()) {
                 height = Float.parseFloat(heightStr.trim());
             }
-            if (weightStr != null && !weightStr.trim().isEmpty()) {
+            if (!weightStr.trim().isEmpty()) {
                 weight = Float.parseFloat(weightStr.trim());
             }
         } catch (NumberFormatException e) {
@@ -92,7 +117,7 @@ public class AdminUserAddServlet extends HttpServlet {
 
         // Kiểm tra email đã tồn tại
         try {
-            if (userDAO.emailExists(email.trim())) {
+            if (userDAO.emailExists(email)) {
                 request.setAttribute("error", "Email đã tồn tại. Vui lòng chọn email khác.");
                 request.getRequestDispatcher("/admin_add_user.jsp").forward(request, response);
                 return;
@@ -109,8 +134,8 @@ public class AdminUserAddServlet extends HttpServlet {
 
         // Tạo user
         User user = new User();
-        user.setFullName(fullName.trim());
-        user.setEmail(email.trim());
+        user.setFullName(fullName);
+        user.setEmail(email);
         user.setPasswordHash(passwordHash);
         user.setAge(age);
         user.setGender(gender);

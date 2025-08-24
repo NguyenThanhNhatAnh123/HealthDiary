@@ -21,6 +21,13 @@ public class AdminAddExerciseServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         // Hiển thị form thêm exercise
         request.getRequestDispatcher("/admin_add_exercise.jsp").forward(request, response);
     }
@@ -28,6 +35,13 @@ public class AdminAddExerciseServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         request.setCharacterEncoding("UTF-8");
 
         // Lấy dữ liệu từ form
@@ -36,13 +50,20 @@ public class AdminAddExerciseServlet extends HttpServlet {
         String muscleGroup = request.getParameter("muscleGroup");
         String difficulty = request.getParameter("difficulty");
         String caloriesPerHourStr = request.getParameter("caloriesPerHour");
+        
+        // Ensure parameters are not null
+        if (exerciseName == null) exerciseName = "";
+        if (type == null) type = "";
+        if (muscleGroup == null) muscleGroup = "";
+        if (difficulty == null) difficulty = "";
+        if (caloriesPerHourStr == null) caloriesPerHourStr = "";
 
         // Kiểm tra dữ liệu bắt buộc
-        if (exerciseName == null || exerciseName.trim().isEmpty() ||
-                type == null || type.trim().isEmpty() ||
-                muscleGroup == null || muscleGroup.trim().isEmpty() ||
-                difficulty == null || difficulty.trim().isEmpty() ||
-                caloriesPerHourStr == null || caloriesPerHourStr.trim().isEmpty()) {
+        if (exerciseName.trim().isEmpty() ||
+                type.trim().isEmpty() ||
+                muscleGroup.trim().isEmpty() ||
+                difficulty.trim().isEmpty() ||
+                caloriesPerHourStr.trim().isEmpty()) {
             request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin bắt buộc");
             request.getRequestDispatcher("/admin_add_exercise.jsp").forward(request, response);
             return;
@@ -65,10 +86,10 @@ public class AdminAddExerciseServlet extends HttpServlet {
 
         // Tạo exercise object
         Exercise_samples exercise = new Exercise_samples();
-        exercise.setExerciseName(exerciseName.trim());
-        exercise.setType(type.trim());
-        exercise.setMuscleGroup(muscleGroup.trim());
-        exercise.setDifficulty(difficulty.trim());
+        exercise.setExerciseName(exerciseName);
+        exercise.setType(type);
+        exercise.setMuscleGroup(muscleGroup);
+        exercise.setDifficulty(difficulty);
         exercise.setCaloriesPerHour(caloriesPerHour);
 
         // Lưu exercise vào database

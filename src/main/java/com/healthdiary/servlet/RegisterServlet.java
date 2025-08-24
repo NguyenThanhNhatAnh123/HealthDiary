@@ -38,11 +38,22 @@ public class RegisterServlet extends HttpServlet {
         String heightStr = request.getParameter("height");
         String weightStr = request.getParameter("weight");
         String goal = request.getParameter("goal");
+        
+        // Ensure parameters are not null
+        if (fullName == null) fullName = "";
+        if (email == null) email = "";
+        if (password == null) password = "";
+        if (confirmPassword == null) confirmPassword = "";
+        if (ageStr == null) ageStr = "";
+        if (gender == null) gender = "";
+        if (heightStr == null) heightStr = "";
+        if (weightStr == null) weightStr = "";
+        if (goal == null) goal = "";
 
         // Basic validation - only check required fields
-        if (fullName == null || fullName.trim().isEmpty() ||
-                email == null || email.trim().isEmpty() ||
-                password == null || password.trim().isEmpty()) {
+        if (fullName.trim().isEmpty() ||
+                email.trim().isEmpty() ||
+                password.trim().isEmpty()) {
             request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin bắt buộc");
             setFormData(request, fullName, email, ageStr, gender, heightStr, weightStr, goal);
             request.getRequestDispatcher("register.jsp").forward(request, response);
@@ -50,7 +61,7 @@ public class RegisterServlet extends HttpServlet {
         }
 
         // Simple email validation
-        if (!authService.isValidEmail(email.trim())) {
+        if (!authService.isValidEmail(email)) {
             request.setAttribute("error", "Email không hợp lệ");
             setFormData(request, fullName, email, ageStr, gender, heightStr, weightStr, goal);
             request.getRequestDispatcher("register.jsp").forward(request, response);
@@ -79,15 +90,15 @@ public class RegisterServlet extends HttpServlet {
         Float weight = null;
 
         try {
-            if (ageStr != null && !ageStr.trim().isEmpty()) {
+            if (!ageStr.trim().isEmpty()) {
                 age = Integer.parseInt(ageStr.trim());
             }
 
-            if (heightStr != null && !heightStr.trim().isEmpty()) {
+            if (!heightStr.trim().isEmpty()) {
                 height = Float.parseFloat(heightStr.trim());
             }
 
-            if (weightStr != null && !weightStr.trim().isEmpty()) {
+            if (!weightStr.trim().isEmpty()) {
                 weight = Float.parseFloat(weightStr.trim());
             }
         } catch (NumberFormatException e) {
@@ -101,7 +112,7 @@ public class RegisterServlet extends HttpServlet {
         boolean success = false;
 		try {
 			success = authService.registerUser(
-			        fullName.trim(), email.trim(), password,
+			        fullName, email, password,
 			        age, gender, height, weight, goal);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

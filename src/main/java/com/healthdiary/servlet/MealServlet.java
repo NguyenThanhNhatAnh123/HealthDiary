@@ -107,20 +107,28 @@ public class MealServlet extends HttpServlet {
                 int totalCalories = 0;
 
                 // Add meal items
-                if (foodNames != null) {
-                    for (int i = 0; i < foodNames.length; i++) {
-                        if (foodNames[i] != null && !foodNames[i].trim().isEmpty()) {
-                            int calories = Integer.parseInt(foodCalories[i]);
-                            double quantity = Double.parseDouble(foodQuantities[i]);
-                            int totalItemCalories = (int) (calories * quantity);
-                            totalCalories += totalItemCalories;
+                if (foodNames != null && foodCalories != null && foodQuantities != null) {
+                    for (int i = 0; i < foodNames.length && i < foodCalories.length && i < foodQuantities.length; i++) {
+                        if (foodNames[i] != null && !foodNames[i].trim().isEmpty() &&
+                            foodCalories[i] != null && !foodCalories[i].trim().isEmpty() &&
+                            foodQuantities[i] != null && !foodQuantities[i].trim().isEmpty()) {
+                            
+                            try {
+                                int calories = Integer.parseInt(foodCalories[i]);
+                                double quantity = Double.parseDouble(foodQuantities[i]);
+                                int totalItemCalories = (int) (calories * quantity);
+                                totalCalories += totalItemCalories;
 
-                            Meal_item mealItem = new Meal_item();
-                            mealItem.setMealId(mealId);
-                            mealItem.setFoodName(foodNames[i]);
-                            mealItem.setCalories(totalItemCalories);
-                            mealItem.setImage(""); // Default image
-                            mealDAO.addMealItem(mealItem);
+                                Meal_item mealItem = new Meal_item();
+                                mealItem.setMealId(mealId);
+                                mealItem.setFoodName(foodNames[i]);
+                                mealItem.setCalories(totalItemCalories);
+                                mealItem.setImage(""); // Default image
+                                mealDAO.addMealItem(mealItem);
+                            } catch (NumberFormatException e) {
+                                System.out.println("Error parsing food data at index " + i + ": " + e.getMessage());
+                                continue; // Skip this item and continue with the next
+                            }
                         }
                     }
                 }
