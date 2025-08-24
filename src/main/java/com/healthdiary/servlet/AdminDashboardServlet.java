@@ -21,6 +21,13 @@ public class AdminDashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+
         System.out.println("=== AdminDashboardServlet started ===");
 
         AdminDashboardDAO dao = new AdminDashboardDAO();

@@ -78,6 +78,14 @@ public class ExerciseServlet extends HttpServlet {
             String weightStr = request.getParameter("weight");
             String caloriesBurnedStr = request.getParameter("caloriesBurned");
             String notes = request.getParameter("notes");
+            
+            // Ensure parameters are not null
+            if (notes == null) {
+                notes = "";
+            }
+            if (weightStr == null) {
+                weightStr = "";
+            }
 
             // Debug: Print received parameters
             System.out.println("=== Exercise Form Submission ===");
@@ -96,11 +104,21 @@ public class ExerciseServlet extends HttpServlet {
                 doGet(request, response);
                 return;
             }
+            
+            // Ensure dateStr is not null
+            if (dateStr == null) {
+                dateStr = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date());
+            }
 
             if (exerciseTypeParam == null || exerciseTypeParam.trim().isEmpty()) {
                 request.setAttribute("error", "Vui lòng chọn loại bài tập");
                 doGet(request, response);
                 return;
+            }
+            
+            // Ensure exerciseTypeParam is not null
+            if (exerciseTypeParam == null) {
+                exerciseTypeParam = "other";
             }
 
             if ("other".equals(exerciseTypeParam) && (customExerciseName == null || customExerciseName.trim().isEmpty())) {
@@ -108,17 +126,47 @@ public class ExerciseServlet extends HttpServlet {
                 doGet(request, response);
                 return;
             }
+            
+            // Ensure customExerciseName is not null
+            if (customExerciseName == null) {
+                customExerciseName = "";
+            }
+            
+            // Ensure exerciseTypeParam is not null
+            if (exerciseTypeParam == null) {
+                exerciseTypeParam = "other";
+            }
 
             if (intensityParam == null || intensityParam.trim().isEmpty()) {
                 request.setAttribute("error", "Vui lòng chọn cường độ");
                 doGet(request, response);
                 return;
             }
+            
+            // Ensure intensityParam is not null
+            if (intensityParam == null) {
+                intensityParam = "medium";
+            }
+            
+            // Ensure dateStr is not null
+            if (dateStr == null) {
+                dateStr = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date());
+            }
 
             if (durationStr == null || durationStr.trim().isEmpty()) {
                 request.setAttribute("error", "Vui lòng nhập thời gian");
                 doGet(request, response);
                 return;
+            }
+            
+            // Ensure durationStr is not null
+            if (durationStr == null) {
+                durationStr = "30";
+            }
+            
+            // Ensure caloriesBurnedStr is not null
+            if (caloriesBurnedStr == null) {
+                caloriesBurnedStr = "0";
             }
 
             // Parse and validate values
@@ -156,9 +204,14 @@ public class ExerciseServlet extends HttpServlet {
             } catch (NumberFormatException e) {
                 caloriesBurned = 0;
             }
+            
+            // Ensure caloriesBurnedStr is not null
+            if (caloriesBurnedStr == null) {
+                caloriesBurnedStr = "0";
+            }
 
             // Determine exercise name
-            String exerciseName;
+            String exerciseName = null;
             if ("other".equals(exerciseTypeParam)) {
                 exerciseName = customExerciseName.trim();
             } else {
@@ -183,14 +236,44 @@ public class ExerciseServlet extends HttpServlet {
             if (caloriesBurned == 0) {
                 caloriesBurned = calculateCaloriesServer(exerciseTypeParam, intensityParam, duration, weightStr);
             }
+            
+            // Ensure weightStr is not null for display purposes
+            if (weightStr == null) {
+                weightStr = "";
+            }
+            
+            // Ensure notes is not null
+            if (notes == null) {
+                notes = "";
+            }
+            
+            // Validate that we have a valid exercise name
+            if (exerciseName == null || exerciseName.trim().isEmpty()) {
+                request.setAttribute("error", "Tên bài tập không hợp lệ");
+                doGet(request, response);
+                return;
+            }
+            
+            // Ensure exerciseName is not null
+            if (exerciseName == null) {
+                exerciseName = "Unknown Exercise";
+            }
 
             // Create and save exercise
             Exercise exercise = new Exercise();
             exercise.setUserId(user.getId());
-            exercise.setExerciseType(exerciseName + " (" + intensityParam + ")");
+            String intensityDisplay = intensityParam != null ? intensityParam : "medium";
+            exercise.setExerciseType(exerciseName + " (" + intensityDisplay + ")");
             exercise.setDurationMin(duration);
             exercise.setCaloriesBurned(caloriesBurned);
             exercise.setLogDate(logDate);
+            
+            // Ensure all required fields are set
+            if (exercise.getUserId() <= 0 || exercise.getExerciseType() == null || exercise.getDurationMin() <= 0) {
+                request.setAttribute("error", "Dữ liệu bài tập không hợp lệ");
+                doGet(request, response);
+                return;
+            }
 
             System.out.println("Saving exercise: " + exercise.toString());
 
@@ -202,6 +285,13 @@ public class ExerciseServlet extends HttpServlet {
             } else {
                 request.setAttribute("error", "Có lỗi xảy ra khi lưu bài tập vào database");
                 System.out.println("Failed to save exercise to database");
+            }
+            
+            // Ensure we have a valid exercise object before proceeding
+            if (exercise == null) {
+                request.setAttribute("error", "Không thể tạo đối tượng bài tập");
+                doGet(request, response);
+                return;
             }
 
             doGet(request, response);
@@ -215,6 +305,11 @@ public class ExerciseServlet extends HttpServlet {
             request.setAttribute("error", "Có lỗi xảy ra khi lưu bài tập: " + e.getMessage());
             doGet(request, response);
         }
+        
+        // Ensure we always have a valid response
+        if (response.isCommitted()) {
+            return;
+        }
     }
 
     /**
@@ -222,6 +317,11 @@ public class ExerciseServlet extends HttpServlet {
      */
     private int calculateCaloriesServer(String exerciseTypeParam, String intensity, int duration, String weightStr) {
         try {
+            // Validate parameters
+            if (exerciseTypeParam == null || intensity == null || duration <= 0) {
+                return Math.max(duration * 5, 1); // Fallback: 5 calories per minute, minimum 1
+            }
+            
             double weight = weightStr != null ? Double.parseDouble(weightStr) : 70.0;
             int baseCaloriesPerHour = 300; // Default
 
@@ -239,16 +339,21 @@ public class ExerciseServlet extends HttpServlet {
 
             // Adjust for intensity
             double intensityMultiplier = 1.0;
-            switch (intensity) {
-                case "low":
-                    intensityMultiplier = 0.7;
-                    break;
-                case "medium":
-                    intensityMultiplier = 1.0;
-                    break;
-                case "high":
-                    intensityMultiplier = 1.3;
-                    break;
+            if (intensity != null) {
+                switch (intensity.toLowerCase()) {
+                    case "low":
+                        intensityMultiplier = 0.7;
+                        break;
+                    case "medium":
+                        intensityMultiplier = 1.0;
+                        break;
+                    case "high":
+                        intensityMultiplier = 1.3;
+                        break;
+                    default:
+                        intensityMultiplier = 1.0; // Default to medium
+                        break;
+                }
             }
 
             // Adjust for weight (assuming base calories are for 70kg person)
@@ -256,10 +361,15 @@ public class ExerciseServlet extends HttpServlet {
             double caloriesPerHour = baseCaloriesPerHour * intensityMultiplier * weightFactor;
             double caloriesPerMinute = caloriesPerHour / 60.0;
             
-            return (int) Math.round(caloriesPerMinute * duration);
+            int calculatedCalories = (int) Math.round(caloriesPerMinute * duration);
+            return Math.max(calculatedCalories, 1); // Ensure at least 1 calorie
         } catch (Exception e) {
             System.out.println("Error calculating calories: " + e.getMessage());
-            return duration * 5; // Fallback: 5 calories per minute
+            return Math.max(duration * 5, 1); // Fallback: 5 calories per minute, minimum 1
+        }
+        } catch (Exception e) {
+            System.out.println("Error calculating calories: " + e.getMessage());
+            return Math.max(duration * 5, 1); // Fallback: 5 calories per minute, minimum 1
         }
     }
 }

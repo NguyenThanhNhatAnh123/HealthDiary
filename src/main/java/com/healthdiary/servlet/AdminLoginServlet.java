@@ -35,9 +35,11 @@ public class AdminLoginServlet extends HttpServlet {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        
+        if (username == null) username = "";
+        if (password == null) password = "";
 
-        if (username == null || username.trim().isEmpty() ||
-                password == null || password.trim().isEmpty()) {
+        if (username.trim().isEmpty() || password.trim().isEmpty()) {
             request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin");
             request.getRequestDispatcher("login_admin.jsp").forward(request, response);
             return;
@@ -45,7 +47,7 @@ public class AdminLoginServlet extends HttpServlet {
 
         Admin_User admin = null;
         try {
-            admin = adminAuthService.loginAdmin(username.trim(), password);
+            admin = adminAuthService.loginAdmin(username, password);
         } catch (Exception e) {
             e.printStackTrace();
         }

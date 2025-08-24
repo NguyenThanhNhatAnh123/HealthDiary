@@ -32,8 +32,28 @@ public class WeightLogServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             User user = (User) request.getSession().getAttribute("user");
+            
+            if (user == null) {
+                response.sendRedirect("login");
+                return;
+            }
+            
             String dateStr = request.getParameter("date");
-            double weight = Double.parseDouble(request.getParameter("weight"));
+            String weightStr = request.getParameter("weight");
+            
+            if (dateStr == null || dateStr.trim().isEmpty() || weightStr == null || weightStr.trim().isEmpty()) {
+                request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin");
+                request.getRequestDispatcher("weight-form.jsp").forward(request, response);
+                return;
+            }
+            
+            double weight = Double.parseDouble(weightStr);
+            
+            if (weight <= 0 || weight > 1000) {
+                request.setAttribute("error", "Cân nặng không hợp lệ");
+                request.getRequestDispatcher("weight-form.jsp").forward(request, response);
+                return;
+            }
 
             // Parse date
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

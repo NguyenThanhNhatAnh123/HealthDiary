@@ -23,9 +23,18 @@ public class AdminUserEditServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         String userIdStr = request.getParameter("id");
+        
+        if (userIdStr == null) userIdStr = "";
 
-        if (userIdStr == null || userIdStr.trim().isEmpty()) {
+        if (userIdStr.trim().isEmpty()) {
             request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
@@ -57,6 +66,13 @@ public class AdminUserEditServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         String userIdStr = request.getParameter("userId");
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
@@ -67,8 +83,20 @@ public class AdminUserEditServlet extends HttpServlet {
         String heightStr = request.getParameter("height");
         String weightStr = request.getParameter("weight");
         String goal = request.getParameter("goal");
+        
+        // Ensure parameters are not null
+        if (userIdStr == null) userIdStr = "";
+        if (fullName == null) fullName = "";
+        if (email == null) email = "";
+        if (password == null) password = "";
+        if (confirmPassword == null) confirmPassword = "";
+        if (ageStr == null) ageStr = "";
+        if (gender == null) gender = "";
+        if (heightStr == null) heightStr = "";
+        if (weightStr == null) weightStr = "";
+        if (goal == null) goal = "";
 
-        if (userIdStr == null || userIdStr.trim().isEmpty()) {
+        if (userIdStr.trim().isEmpty()) {
             request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
@@ -99,8 +127,8 @@ public class AdminUserEditServlet extends HttpServlet {
         }
 
         // Validate dữ liệu bắt buộc
-        if (fullName == null || fullName.trim().isEmpty() ||
-                email == null || email.trim().isEmpty()) {
+        if (fullName.trim().isEmpty() ||
+                email.trim().isEmpty()) {
             request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin bắt buộc");
             request.setAttribute("user", currentUser);
             request.getRequestDispatcher("/admin_edit_user.jsp").forward(request, response);
@@ -108,7 +136,7 @@ public class AdminUserEditServlet extends HttpServlet {
         }
 
         // Validate email format
-        if (!authService.isValidEmail(email.trim())) {
+        if (!authService.isValidEmail(email)) {
             request.setAttribute("error", "Email không hợp lệ");
             request.setAttribute("user", currentUser);
             request.getRequestDispatcher("/admin_edit_user.jsp").forward(request, response);
@@ -116,9 +144,9 @@ public class AdminUserEditServlet extends HttpServlet {
         }
 
         // Kiểm tra email đã tồn tại (nếu đổi)
-        if (!email.trim().equals(currentUser.getEmail())) {
+        if (!email.equals(currentUser.getEmail())) {
             try {
-                if (userDAO.emailExists(email.trim())) {
+                if (userDAO.emailExists(email)) {
                     request.setAttribute("error", "Email đã tồn tại. Vui lòng chọn email khác.");
                     request.setAttribute("user", currentUser);
                     request.getRequestDispatcher("/admin_edit_user.jsp").forward(request, response);
@@ -134,7 +162,7 @@ public class AdminUserEditServlet extends HttpServlet {
         }
 
         // Kiểm tra password nếu được nhập
-        if (password != null && !password.trim().isEmpty()) {
+        if (!password.trim().isEmpty()) {
             if (!authService.isValidPassword(password)) {
                 request.setAttribute("error", "Mật khẩu phải có ít nhất 4 ký tự");
                 request.setAttribute("user", currentUser);
@@ -156,13 +184,13 @@ public class AdminUserEditServlet extends HttpServlet {
         Float weight = null;
 
         try {
-            if (ageStr != null && !ageStr.trim().isEmpty()) {
+            if (!ageStr.trim().isEmpty()) {
                 age = Integer.parseInt(ageStr.trim());
             }
-            if (heightStr != null && !heightStr.trim().isEmpty()) {
+            if (!heightStr.trim().isEmpty()) {
                 height = Float.parseFloat(heightStr.trim());
             }
-            if (weightStr != null && !weightStr.trim().isEmpty()) {
+            if (!weightStr.trim().isEmpty()) {
                 weight = Float.parseFloat(weightStr.trim());
             }
         } catch (NumberFormatException e) {
@@ -173,8 +201,8 @@ public class AdminUserEditServlet extends HttpServlet {
         }
 
         // Cập nhật user
-        currentUser.setFullName(fullName.trim());
-        currentUser.setEmail(email.trim());
+        currentUser.setFullName(fullName);
+        currentUser.setEmail(email);
         currentUser.setAge(age);
         currentUser.setGender(gender);
         currentUser.setHeightCm(height);
@@ -184,10 +212,10 @@ public class AdminUserEditServlet extends HttpServlet {
         try {
             boolean updated = userDAO.updateUser(currentUser);
             if (updated) {
-                if (password != null && !password.trim().isEmpty()) {
-                    String passwordHash = authService.getPasswordHash(password);
-                    userDAO.updatePassword(userId, passwordHash);
-                }
+                            if (!password.trim().isEmpty()) {
+                String passwordHash = authService.getPasswordHash(password);
+                userDAO.updatePassword(userId, passwordHash);
+            }
 
                 request.getSession().setAttribute("success", "Cập nhật user thành công!");
                 response.sendRedirect(request.getContextPath() + "/admin/users");

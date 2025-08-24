@@ -22,10 +22,19 @@ public class AdminUserDeleteServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         // Lấy ID của user cần xóa
         String userIdStr = request.getParameter("id");
+        
+        if (userIdStr == null) userIdStr = "";
 
-        if (userIdStr == null || userIdStr.trim().isEmpty()) {
+        if (userIdStr.trim().isEmpty()) {
             request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;
@@ -59,9 +68,20 @@ public class AdminUserDeleteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if admin is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("adminUser") == null) {
+            response.sendRedirect("login_admin");
+            return;
+        }
+        
         // Lấy ID của user cần xóa
         String userIdStr = request.getParameter("userId");
         String confirmDelete = request.getParameter("confirmDelete");
+        
+        // Ensure parameters are not null
+        if (userIdStr == null) userIdStr = "";
+        if (confirmDelete == null) confirmDelete = "";
 
         // Kiểm tra xác nhận xóa
         if (!"true".equals(confirmDelete)) {
@@ -70,7 +90,7 @@ public class AdminUserDeleteServlet extends HttpServlet {
             return;
         }
 
-        if (userIdStr == null || userIdStr.trim().isEmpty()) {
+        if (userIdStr.trim().isEmpty()) {
             request.getSession().setAttribute("error", "ID user không hợp lệ");
             response.sendRedirect(request.getContextPath() + "/admin/users");
             return;

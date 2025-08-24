@@ -32,6 +32,12 @@ public class CalorieTrackingServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             User user = (User) request.getSession().getAttribute("user");
+            
+            if (user == null) {
+                response.sendRedirect("login");
+                return;
+            }
+            
             String date = request.getParameter("date");
 
             if (date == null) {
