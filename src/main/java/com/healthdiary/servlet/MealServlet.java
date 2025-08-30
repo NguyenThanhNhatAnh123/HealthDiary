@@ -82,7 +82,7 @@ public class MealServlet extends HttpServlet {
             // Get food items data
             String foodName = request.getParameter("foodName");
             String foodCaloriesStr = request.getParameter("foodCalories");
-            String foodQuantityStr = request.getParameter("foodQuantity");
+            String foodQuantityStr = request.getParameter("quantity");
 
             // Debug logging
 
@@ -112,16 +112,29 @@ public class MealServlet extends HttpServlet {
             double quantity = Double.parseDouble(foodQuantityStr);
             int totalItemCalories = (int) (calories * quantity / 100); // Adjust for per 100g
 
-            // Create meal item directly (following Exercise pattern)
-            Meal_item mealItem = new Meal_item();
-            mealItem.setMealId(user.getId()); // Use user_id as meal_id for simplicity
-            mealItem.setFoodName(foodName + " (" + mealType + ")"); // Include meal type in food name
-            mealItem.setCalories(totalItemCalories);
-            mealItem.setImage(""); // Default image
+            // Create meal first
+            Meal meal = new Meal();
+            meal.setUserId(user.getId());
+            meal.setMealTime(mealType);
+            meal.setLogDate(logDate);
+            meal.setTotalCalories(totalItemCalories);
             
-            System.out.println("DEBUG - Saving meal item: " + mealItem.toString());
+            int mealId = mealDAO.addMeal(meal);
+            boolean success = false;
             
-            boolean success = mealDAO.addMealItem(mealItem);
+            if (mealId > 0) {
+                // Create meal item with proper meal_id
+                Meal_item mealItem = new Meal_item();
+                mealItem.setMealId(mealId); // Use proper meal_id
+                mealItem.setFoodName(foodName);
+                mealItem.setCalories(totalItemCalories);
+                mealItem.setImage(""); // Default image
+                mealItem.setQuantity(quantity);
+                
+                System.out.println("DEBUG - Saving meal item: " + mealItem.toString());
+                
+                success = mealDAO.addMealItem(mealItem);
+            }
             
             if (success) {
                 request.setAttribute("success", "Ghi bữa ăn thành công! Đã thêm " + foodName + " (" + totalItemCalories + " kcal).");

@@ -37,7 +37,7 @@ public class MealDAO {
 
     // Thêm meal item
     public boolean addMealItem(Meal_item mealItem) {
-        String sql = "INSERT INTO meal_items (meal_id, food_name, calories, image, quantity) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO meals_items (meal_id, food_name, calories, image, quantity) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -106,7 +106,7 @@ public class MealDAO {
 
     public List<Meal_item> getMealItemsByMealId(int mealId) {
         List<Meal_item> mealItems = new ArrayList<>();
-        String sql = "SELECT * FROM meal_items WHERE meal_id = ?";
+        String sql = "SELECT * FROM meals_items WHERE meal_id = ?";
 
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -150,7 +150,7 @@ public class MealDAO {
 
     // Xóa meal items của một meal
     public boolean deleteMealItems(int mealId) {
-        String sql = "DELETE FROM meal_items WHERE meal_id = ?";
+        String sql = "DELETE FROM meals_items WHERE meal_id = ?";
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
