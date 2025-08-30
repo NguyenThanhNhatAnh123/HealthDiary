@@ -7,9 +7,9 @@ public class DatabaseUtil {
     public static Connection getConnection() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/health_diary",  
+            "jdbc:mysql://localhost:3306/health_diary?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8",  
             "root",  
-            "123"  
+            "password"  
         );
     }
 }

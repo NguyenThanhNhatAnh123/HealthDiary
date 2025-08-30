@@ -112,20 +112,39 @@ public class MealServlet extends HttpServlet {
             double quantity = Double.parseDouble(foodQuantityStr);
             int totalItemCalories = (int) (calories * quantity / 100); // Adjust for per 100g
 
-            // Create meal item directly (following Exercise pattern)
+            // Create new meal first
+            Meal meal = new Meal();
+            meal.setUserId(user.getId());
+            meal.setMealTime(mealType);
+            meal.setLogDate(logDate);
+            meal.setTotalCalories(null); // Will be updated after adding items
+            
+            int mealId = mealDAO.addMeal(meal);
+            
+            if (mealId <= 0) {
+                throw new Exception("Failed to create meal record");
+            }
+            
+            // Create meal item with correct mealId
             Meal_item mealItem = new Meal_item();
-            mealItem.setMealId(user.getId()); // Use user_id as meal_id for simplicity
-            mealItem.setFoodName(foodName + " (" + mealType + ")"); // Include meal type in food name
+            mealItem.setMealId(mealId); // Use the actual meal ID, not user ID
+            mealItem.setFoodName(foodName);
             mealItem.setCalories(totalItemCalories);
             mealItem.setImage(""); // Default image
+            mealItem.setQuantity(quantity); // Add quantity
             
             System.out.println("DEBUG - Saving meal item: " + mealItem.toString());
             
             boolean success = mealDAO.addMealItem(mealItem);
             
             if (success) {
+                // Update meal with total calories
+                meal.setId(mealId);
+                meal.setTotalCalories(totalItemCalories);
+                mealDAO.updateMeal(meal);
+                
                 request.setAttribute("success", "Ghi bữa ăn thành công! Đã thêm " + foodName + " (" + totalItemCalories + " kcal).");
-                System.out.println("DEBUG - Meal item saved successfully!");
+                System.out.println("DEBUG - Meal and meal item saved successfully!");
             } else {
                 System.err.println("ERROR - Failed to save meal item to database");
                 request.setAttribute("error", "Có lỗi xảy ra khi ghi bữa ăn vào cơ sở dữ liệu!");
