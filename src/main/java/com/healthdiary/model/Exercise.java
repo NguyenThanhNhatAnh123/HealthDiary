@@ -4,33 +4,33 @@ import java.util.Date;
 
 public class Exercise {
     private int id;
-    private int userId;
-    private String exerciseType;
-    private int durationMin;
-    private Integer caloriesBurned;
-    private Date logDate;
+    private int user_id;
+    private String exercise_type;
+    private int duration_min;
+    private Integer calories_burned;
+    private Date log_date;
 
 
     public Exercise() {
     }
 
     
-    public Exercise(int userId, String exerciseType, int durationMin, Integer caloriesBurned, Date logDate) {
-        this.userId = userId;
-        this.exerciseType = exerciseType;
-        this.durationMin = durationMin;
-        this.caloriesBurned = caloriesBurned;
-        this.logDate = logDate;
+    public Exercise(int user_id, String exercise_type, int duration_min, Integer calories_burned, Date log_date) {
+        this.user_id = user_id;
+        this.exercise_type = exercise_type;
+        this.duration_min = duration_min;
+        this.calories_burned = calories_burned;
+        this.log_date = log_date;
     }
 
 
-    public Exercise(int id, int userId, String exerciseType, int durationMin, Integer caloriesBurned, Date logDate) {
+    public Exercise(int id, int user_id, String exercise_type, int duration_min, Integer calories_burned, Date log_date) {
         this.id = id;
-        this.userId = userId;
-        this.exerciseType = exerciseType;
-        this.durationMin = durationMin;
-        this.caloriesBurned = caloriesBurned;
-        this.logDate = logDate;
+        this.user_id = user_id;
+        this.exercise_type = exercise_type;
+        this.duration_min = duration_min;
+        this.calories_burned = calories_burned;
+        this.log_date = log_date;
     }
 
   
@@ -43,54 +43,44 @@ public class Exercise {
     }
 
     public int getUserId() {
-        return userId;
+        return user_id;
     }
 
     public void setUserId(int userId) {
-        this.userId = userId;
+        this.user_id = userId;
     }
 
     public String getExerciseType() {
-        return exerciseType;
+        return exercise_type;
     }
 
     public void setExerciseType(String exerciseType) {
-        this.exerciseType = exerciseType;
+        this.exercise_type = exerciseType;
     }
 
     public int getDurationMin() {
-        return durationMin;
+        return duration_min;
     }
 
     public void setDurationMin(int durationMin) {
-        this.durationMin = durationMin;
+        this.duration_min = durationMin;
     }
 
     public Integer getCaloriesBurned() {
-        return caloriesBurned;
+        return calories_burned;
     }
 
     public void setCaloriesBurned(Integer caloriesBurned) {
-        this.caloriesBurned = caloriesBurned;
+        this.calories_burned = caloriesBurned;
     }
 
     public Date getLogDate() {
-        return logDate;
+        return log_date;
     }
 
     public void setLogDate(Date logDate) {
-        this.logDate = logDate;
+        this.log_date = logDate;
     }
 
-    @Override
-    public String toString() {
-        return "Exercise{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", exerciseType='" + exerciseType + '\'' +
-                ", durationMin=" + durationMin +
-                ", caloriesBurned=" + caloriesBurned +
-                ", logDate=" + logDate +
-                '}';
-    }
+  
 }

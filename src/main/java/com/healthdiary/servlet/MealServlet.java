@@ -80,10 +80,11 @@ public class MealServlet extends HttpServlet {
             String notes = request.getParameter("notes");
 
             // Get food items data
-            String[] foodNames = request.getParameterValues("foodName");
-            String[] foodCalories = request.getParameterValues("foodCalories");
-            String[] foodQuantities = request.getParameterValues("foodQuantity");
-            String[] foodUnits = request.getParameterValues("foodUnit");
+            String foodName = request.getParameter("foodName");
+            String foodCaloriesStr = request.getParameter("foodCalories");
+            String foodQuantityStr = request.getParameter("foodQuantity");
+
+            // Debug logging
 
             if (mealType == null || mealType.trim().isEmpty()) {
                 request.setAttribute("error", "Vui lòng chọn loại bữa ăn");
@@ -91,53 +92,53 @@ public class MealServlet extends HttpServlet {
                 return;
             }
 
-            // Parse date
+            if (dateStr == null || dateStr.trim().isEmpty()) {
+                request.setAttribute("error", "Vui lòng chọn thời gian");
+                showMealForm(request, response);
+                return;
+            }
+
+            if (foodName == null || foodName.trim().isEmpty()) {
+                request.setAttribute("error", "Vui lòng chọn ít nhất một thực phẩm");
+                showMealForm(request, response);
+                return;
+            }
+
+            // Parse date and calculate calories
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
             Date logDate = sdf.parse(dateStr);
+            
+            int calories = Integer.parseInt(foodCaloriesStr);
+            double quantity = Double.parseDouble(foodQuantityStr);
+            int totalItemCalories = (int) (calories * quantity / 100); // Adjust for per 100g
 
-            // Create new meal
-            Meal meal = new Meal();
-            meal.setUserId(user.getId());
-            meal.setMealTime(mealType);
-            meal.setLogDate(logDate);
-
-            int mealId = mealDAO.addMeal(meal);
-
-            if (mealId > 0) {
-                int totalCalories = 0;
-
-                // Add meal items
-                if (foodNames != null) {
-                    for (int i = 0; i < foodNames.length; i++) {
-                        if (foodNames[i] != null && !foodNames[i].trim().isEmpty()) {
-                            int calories = Integer.parseInt(foodCalories[i]);
-                            double quantity = Double.parseDouble(foodQuantities[i]);
-                            int totalItemCalories = (int) (calories * quantity);
-                            totalCalories += totalItemCalories;
-
-                            Meal_item mealItem = new Meal_item();
-                            mealItem.setMealId(mealId);
-                            mealItem.setFoodName(foodNames[i]);
-                            mealItem.setCalories(totalItemCalories);
-                            mealItem.setImage(""); // Default image
-                            mealDAO.addMealItem(mealItem);
-                        }
-                    }
-                }
-
-                // Update total calories for meal
-                meal.setId(mealId);
-                meal.setTotalCalories(totalCalories);
-                mealDAO.updateMeal(meal);
-
-                request.setAttribute("success", "Ghi bữa ăn thành công!");
+            // Create meal item directly (following Exercise pattern)
+            Meal_item mealItem = new Meal_item();
+            mealItem.setMealId(user.getId()); // Use user_id as meal_id for simplicity
+            mealItem.setFoodName(foodName + " (" + mealType + ")"); // Include meal type in food name
+            mealItem.setCalories(totalItemCalories);
+            mealItem.setImage(""); // Default image
+            
+            System.out.println("DEBUG - Saving meal item: " + mealItem.toString());
+            
+            boolean success = mealDAO.addMealItem(mealItem);
+            
+            if (success) {
+                request.setAttribute("success", "Ghi bữa ăn thành công! Đã thêm " + foodName + " (" + totalItemCalories + " kcal).");
+                System.out.println("DEBUG - Meal item saved successfully!");
             } else {
-                request.setAttribute("error", "Có lỗi xảy ra khi ghi bữa ăn!");
+                System.err.println("ERROR - Failed to save meal item to database");
+                request.setAttribute("error", "Có lỗi xảy ra khi ghi bữa ăn vào cơ sở dữ liệu!");
             }
 
         } catch (NumberFormatException | ParseException e) {
+            System.err.println("ERROR - Data parsing error: " + e.getMessage());
             e.printStackTrace();
-            request.setAttribute("error", "Dữ liệu không hợp lệ!");
+            request.setAttribute("error", "Dữ liệu không hợp lệ! Vui lòng kiểm tra lại thông tin.");
+        } catch (Exception e) {
+            System.err.println("ERROR - Unexpected error: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "Có lỗi hệ thống xảy ra. Vui lòng thử lại sau.");
         }
 
         // Forward back to form

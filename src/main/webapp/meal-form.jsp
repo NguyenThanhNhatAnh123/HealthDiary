@@ -17,13 +17,13 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e6 50%, #ffe4e6 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -31,7 +31,7 @@
         .header {
             background: #fff;
             border-radius: 16px;
-            box-shadow: 0 2px 20px rgba(255, 154, 158, 0.1);
+            box-shadow: 0 2px 20px rgba(233, 30, 99, 0.1);
             padding: 24px 32px;
             margin-bottom: 24px;
             display: flex;
@@ -65,32 +65,25 @@
             transform: translateY(-1px);
         }
 
-        .breadcrumb .separator {
-            color: #f48fb1;
-            font-size: 14px;
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
         }
 
-        .breadcrumb a.logout {
-            color: #d32f2f;
-        }
-
-        .breadcrumb a.logout:hover {
-            background: #ffebee;
-        }
-
-        /* Form Container */
-        .form-container {
+        /* Food List Section */
+        .food-list-section {
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(233, 30, 99, 0.12);
-            padding: 40px;
-            max-width: 900px;
-            margin: 0 auto;
+            padding: 32px;
             position: relative;
             overflow: hidden;
         }
 
-        .form-container::before {
+        .food-list-section::before {
             content: '';
             position: absolute;
             top: 0;
@@ -100,37 +93,120 @@
             background: linear-gradient(90deg, #e91e63, #f48fb1, #e91e63);
         }
 
-        /* Section Headers */
         .section-header {
             color: #e91e63;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 600;
-            margin: 32px 0 24px 0;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .section-header:first-child {
-            margin-top: 0;
-        }
-
         .section-header i {
             background: #fce4ec;
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 18px;
         }
 
-        /* Form Groups */
-        .form-group {
-            margin-bottom: 24px;
+        /* Food Grid */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
-        .form-row {
+        .food-card {
+            background: linear-gradient(135deg, #fef4f8 0%, #fce4ec 100%);
+            border: 2px solid #fce4ec;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .food-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.15);
+            border-color: #e91e63;
+        }
+
+        .food-card.selected {
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: #fff;
+            border-color: #c2185b;
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.3);
+        }
+
+        .food-card h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: inherit;
+        }
+
+        .food-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .food-details span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .food-details i {
+            width: 16px;
+            opacity: 0.7;
+        }
+
+        .calories-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #e91e63;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .food-card.selected .calories-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(233, 30, 99, 0.12);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4caf50, #66bb6a, #4caf50);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
         }
 
         .form-group label {
@@ -146,14 +222,9 @@
             font-weight: 700;
         }
 
-        /* Form Controls */
-        input[type="datetime-local"], 
-        input[type="number"], 
-        input[type="text"], 
-        select, 
-        textarea {
+        input[type="datetime-local"], input[type="number"], input[type="text"], textarea, select {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border: 2px solid #fce4ec;
             border-radius: 12px;
             font-size: 16px;
@@ -162,192 +233,99 @@
             font-family: inherit;
         }
 
-        input[type="datetime-local"]:focus, 
-        input[type="number"]:focus, 
-        input[type="text"]:focus, 
-        select:focus, 
-        textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #e91e63;
             background: #fff;
             box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
-            transform: translateY(-1px);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        select {
-            cursor: pointer;
         }
 
         /* Meal Type Selector */
         .meal-type-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin: 15px 0;
+            display: flex;
+            gap: 8px;
         }
 
         .meal-type-option {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 15px;
+            padding: 12px 16px;
             border: 2px solid #fce4ec;
-            border-radius: 16px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
             text-align: center;
+            flex: 1;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
         }
 
         .meal-type-option:hover {
             border-color: #e91e63;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(233, 30, 99, 0.2);
+            transform: translateY(-1px);
         }
 
         .meal-type-option.selected {
+            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            color: #fff;
             border-color: #e91e63;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        /* Food Info */
+        .food-info {
             background: #fce4ec;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(233, 30, 99, 0.3);
-        }
-
-        .meal-emoji {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .meal-type-option div:last-child {
-            font-weight: 600;
-            color: #424242;
-            font-size: 14px;
-        }
-
-        /* Food Items */
-        .food-items-container {
-            background: #f8f9fa;
+            padding: 16px;
             border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            border: 2px solid #fce4ec;
-        }
-
-        .food-item {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(233, 30, 99, 0.1);
+            margin: 16px 0;
             border-left: 4px solid #e91e63;
-            transition: all 0.3s ease;
         }
 
-        .food-item:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(233, 30, 99, 0.15);
-        }
-
-        .food-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .food-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .food-item-title {
-            font-weight: 600;
+        .food-info h5 {
             color: #e91e63;
+            margin-bottom: 8px;
             font-size: 16px;
         }
 
-        .remove-food-btn {
-            background: linear-gradient(135deg, #f44336, #e57373);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .remove-food-btn:hover {
-            background: linear-gradient(135deg, #d32f2f, #f44336);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
-        }
-
-        .food-input-group {
+        .info-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 15px;
-            align-items: end;
-        }
-
-        .food-input-group input,
-        .food-input-group select {
-            margin-bottom: 0;
-        }
-
-        .food-input-group label {
-            font-size: 12px;
-            margin-bottom: 5px;
-            color: #666;
-            font-weight: 500;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 14px;
         }
 
         /* Total Calories Display */
         .total-calories {
-            background: linear-gradient(135deg, #fce4ec, #f8bbd9);
-            padding: 25px;
-            border-radius: 16px;
-            margin: 25px 0;
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            padding: 16px;
+            border-radius: 12px;
             text-align: center;
-            border: 2px solid #f48fb1;
-            box-shadow: 0 4px 16px rgba(233, 30, 99, 0.1);
+            margin: 16px 0;
+            border-left: 4px solid #4caf50;
         }
 
         .total-calories-label {
-            color: #e91e63;
+            color: #2e7d32;
             font-weight: 600;
-            font-size: 16px;
-            margin-bottom: 8px;
         }
 
         .total-calories-value {
-            font-size: 32px;
-            font-weight: 700;
-            color: #e91e63;
-            text-shadow: 1px 1px 2px rgba(233, 30, 99, 0.1);
+            font-size: 24px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-top: 8px;
         }
 
         /* Buttons */
         .button-group {
             display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 1px solid #fce4ec;
+            gap: 12px;
+            margin-top: 24px;
         }
 
         .btn {
-            padding: 14px 32px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
@@ -356,17 +334,19 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            flex: 1;
+            justify-content: center;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #e91e63, #f48fb1);
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
             color: #fff;
-            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
         }
 
         .btn-secondary {
@@ -380,26 +360,11 @@
             transform: translateY(-1px);
         }
 
-        .btn-add {
-            background: linear-gradient(135deg, #4caf50, #66bb6a);
-            color: white;
-            padding: 12px 24px;
-            font-size: 14px;
-            margin: 15px 0;
-            width: 100%;
-        }
-
-        .btn-add:hover {
-            background: linear-gradient(135deg, #388e3c, #4caf50);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-        }
-
         /* Alerts */
         .alert {
             border-radius: 12px;
             padding: 16px 20px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -418,99 +383,54 @@
             border-left: 4px solid #4caf50;
         }
 
-        /* Empty state */
-        .empty-food-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-        }
-
-        .empty-food-state i {
-            font-size: 48px;
-            color: #f48fb1;
-            margin-bottom: 16px;
-        }
-
-        /* Food suggestions */
-        .food-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #fce4ec;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-
-        .food-suggestion {
-            padding: 12px 15px;
-            cursor: pointer;
-            border-bottom: 1px solid #fce4ec;
-            transition: all 0.3s ease;
-        }
-
-        .food-suggestion:hover {
-            background: #fce4ec;
-        }
-
-        .food-suggestion:last-child {
-            border-bottom: none;
-        }
-
         /* Responsive */
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 16px;
-                text-align: center;
-            }
-
-            .form-container {
-                padding: 24px;
-                margin: 16px;
-            }
-
-            .form-row {
+        @media (max-width: 1200px) {
+            .main-layout {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .food-grid {
+                grid-template-columns: 1fr;
             }
 
             .meal-type-selector {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .food-input-group {
-                grid-template-columns: 1fr;
-                gap: 15px;
+                flex-direction: column;
             }
 
             .button-group {
                 flex-direction: column;
             }
 
-            .btn {
-                width: 100%;
-                justify-content: center;
+            .food-details, .info-grid {
+                grid-template-columns: 1fr;
             }
         }
 
-        /* Loading animation */
-        .btn-primary:active {
-            transform: translateY(0);
+        /* Loading state */
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Hover effects */
-        .form-group:hover label {
-            color: #c2185b;
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .form-group:focus-within label {
-            color: #c2185b;
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -518,370 +438,326 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1><i class="fas fa-utensils"></i> Ghi nhận bữa ăn</h1>
+            <h1><i class="fas fa-utensils"></i> Health Diary</h1>
             <div class="breadcrumb">
-                <a href="dashboard">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-                <span class="separator">•</span>
-                <a href="calorie-tracking">
-                    <i class="fas fa-chart-line"></i> Theo dõi Calorie
-                </a>
-                <span class="separator">•</span>
-                <span style="color: #666;">Ghi nhận bữa ăn</span>
-                <span class="separator">•</span>
-                <a href="logout" class="logout">
-                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </a>
+                <a href="${pageContext.request.contextPath}/dashboard"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="${pageContext.request.contextPath}/meal-history"><i class="fas fa-chart-line"></i> Theo dõi</a>
+                <a href="${pageContext.request.contextPath}/profile"><i class="fas fa-user"></i> Hồ sơ</a>
+                <a href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
             </div>
         </div>
 
-        <!-- Form Container -->
-        <div class="form-container">
-            <!-- Error Alert từ server -->
-            <c:if test="${not empty error}">
-                <div class="alert alert-error">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>${error}</span>
-                </div>
-            </c:if>
+        <!-- Alerts -->
+        <c:if test="${not empty success}">
+            <div class="alert alert-success" id="successAlert">
+                <i class="fas fa-check-circle"></i>
+                <span>${success}</span>
+            </div>
+        </c:if>
 
-            <!-- Success Alert từ server -->
-            <c:if test="${not empty success}">
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i>
-                    <span>${success}</span>
-                </div>
-            </c:if>
+        <c:if test="${not empty error}">
+            <div class="alert alert-error" id="errorAlert">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>${error}</span>
+            </div>
+        </c:if>
 
-            <!-- Meal Form -->
-            <form action="meal" method="post" id="mealForm">
-                <!-- Basic Information -->
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Food List Section -->
+            <div class="food-list-section">
                 <div class="section-header">
-                    <i class="fas fa-clock"></i>
-                    Thông tin cơ bản
+                    <i class="fas fa-list"></i>
+                    Danh sách thực phẩm
                 </div>
 
-                <div class="form-group">
-                    <label for="date">Thời gian <span class="required">*</span></label>
-                    <input type="datetime-local" id="date" name="date" 
-                           value="<fmt:formatDate value='<%= new java.util.Date() %>' pattern='yyyy-MM-dd\'T\'HH:mm' />" required>
+                <div class="food-grid" id="foodGrid">
+                    <c:choose>
+                        <c:when test="${not empty foodSamples}">
+                            <c:forEach var="food" items="${foodSamples}">
+                                <div class="food-card" 
+                                     data-food-id="${food.id}"
+                                     data-food-name="${food.foodName}"
+                                     data-food-type="${food.type != null ? food.type : 'N/A'}"
+                                     data-food-calories="${food.calories != null ? food.calories : 0}"
+                                     data-food-protein="${food.protein != null ? food.protein : 0}"
+                                     data-food-carbs="${food.carbs != null ? food.carbs : 0}"
+                                     data-food-fat="${food.fat != null ? food.fat : 0}">
+                                    <div class="calories-badge">${food.calories != null ? food.calories : 0} kcal/100g</div>
+                                    <h4>${food.foodName}</h4>
+                                    <div class="food-details">
+                                        <span><i class="fas fa-tag"></i> ${food.type != null ? food.type : 'N/A'}</span>
+                                        <span><i class="fas fa-dumbbell"></i> ${food.protein != null ? food.protein : 0}g protein</span>
+                                        <span><i class="fas fa-bread-slice"></i> ${food.carbs != null ? food.carbs : 0}g carbs</span>
+                                        <span><i class="fas fa-tint"></i> ${food.fat != null ? food.fat : 0}g fat</span>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                                <p>Không có thực phẩm nào trong cơ sở dữ liệu.</p>
+                                <p><small>Vui lòng liên hệ quản trị viên để thêm dữ liệu thực phẩm.</small></p>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <i class="fas fa-plus-circle"></i>
+                    Ghi nhận bữa ăn
                 </div>
 
-                <div class="form-group">
-                    <label>Loại bữa ăn <span class="required">*</span></label>
-                    <div class="meal-type-selector">
-                        <div class="meal-type-option" onclick="selectMealType('breakfast')" tabindex="0">
-                            <div class="meal-emoji">🌅</div>
-                            <div>Bữa sáng</div>
+                <form id="mealForm" method="post" action="${pageContext.request.contextPath}/meal-form">
+                    <div class="form-group">
+                        <label for="date">Thời gian <span class="required">*</span></label>
+                        <input type="datetime-local" id="date" name="date" required 
+                               value="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd'T'HH:mm" />">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Loại bữa ăn <span class="required">*</span></label>
+                        <div class="meal-type-selector">
+                            <div class="meal-type-option" data-meal-type="breakfast" onclick="selectMealType('breakfast', this)">
+                                🌅 Bữa sáng
+                            </div>
+                            <div class="meal-type-option" data-meal-type="lunch" onclick="selectMealType('lunch', this)">
+                                ☀️ Bữa trưa
+                            </div>
+                            <div class="meal-type-option" data-meal-type="dinner" onclick="selectMealType('dinner', this)">
+                                🌙 Bữa tối
+                            </div>
+                            <div class="meal-type-option" data-meal-type="snack" onclick="selectMealType('snack', this)">
+                                🍿 Ăn vặt
+                            </div>
                         </div>
-                        <div class="meal-type-option" onclick="selectMealType('lunch')" tabindex="0">
-                            <div class="meal-emoji">☀️</div>
-                            <div>Bữa trưa</div>
-                        </div>
-                        <div class="meal-type-option" onclick="selectMealType('dinner')" tabindex="0">
-                            <div class="meal-emoji">🌙</div>
-                            <div>Bữa tối</div>
-                        </div>
-                        <div class="meal-type-option" onclick="selectMealType('snack')" tabindex="0">
-                            <div class="meal-emoji">🍿</div>
-                            <div>Ăn vặt</div>
+                        <input type="hidden" id="mealType" name="mealType" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chọn thực phẩm <span class="required">*</span></label>
+                        <div class="food-info" id="selectedFoodInfo" style="display: none;">
+                            <h5 id="selectedFoodName"></h5>
+                            <div class="info-grid">
+                                <span><i class="fas fa-tag"></i> <span id="selectedFoodType"></span></span>
+                                <span><i class="fas fa-fire"></i> <span id="selectedFoodCalories"></span> kcal/100g</span>
+                                <span><i class="fas fa-dumbbell"></i> <span id="selectedFoodProtein"></span>g protein</span>
+                                <span><i class="fas fa-bread-slice"></i> <span id="selectedFoodCarbs"></span>g carbs</span>
+                                <span><i class="fas fa-tint"></i> <span id="selectedFoodFat"></span>g fat</span>
+                            </div>
                         </div>
                     </div>
-                    <input type="hidden" id="mealType" name="mealType" value="" required>
-                </div>
 
-                <!-- Food Items Section -->
-                <div class="section-header">
-                    <i class="fas fa-apple-alt"></i>
-                    Thực phẩm
-                </div>
-
-                <div class="form-group">
-                    <div class="food-items-container" id="foodItemsContainer">
-                        <div class="empty-food-state" id="emptyFoodState">
-                            <i class="fas fa-utensils"></i>
-                            <div>Chưa có thực phẩm nào được thêm</div>
-                            <div style="font-size: 14px; margin-top: 8px;">Nhấn nút "Thêm thực phẩm" để bắt đầu</div>
-                        </div>
+                    <div class="form-group">
+                        <label>Số lượng (g)</label>
+                        <input type="number" name="quantity" value="100" min="1" step="1" 
+                               oninput="calculateTotalCalories()" required>
                     </div>
-                    <button type="button" class="btn btn-add" onclick="addFoodItem()">
-                        <i class="fas fa-plus"></i>
-                        Thêm thực phẩm
-                    </button>
-                </div>
 
-                <div class="total-calories" id="totalCaloriesDisplay" style="display: none;">
-                    <div class="total-calories-label">
-                        <i class="fas fa-fire"></i> Tổng calorie
+                    <div class="total-calories" id="totalCaloriesDisplay" style="display: none;">
+                        <div class="total-calories-label">🔥 Tổng calorie:</div>
+                        <div class="total-calories-value" id="totalCaloriesValue">0 kcal</div>
+                        <input type="hidden" id="totalCalories" name="totalCalories" value="0">
                     </div>
-                    <div class="total-calories-value" id="totalCaloriesValue">0 kcal</div>
-                </div>
 
-                <!-- Additional Information -->
-                <div class="section-header">
-                    <i class="fas fa-sticky-note"></i>
-                    Thông tin bổ sung
-                </div>
+                    <div class="form-group">
+                        <label for="notes">Ghi chú</label>
+                        <textarea id="notes" name="notes" placeholder="Mô tả chi tiết về bữa ăn..." rows="3">${param.notes}</textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label for="notes">Ghi chú</label>
-                    <textarea id="notes" name="notes" placeholder="Mô tả chi tiết về bữa ăn, cảm nhận, địa điểm..."></textarea>
-                </div>
+                    <!-- Hidden inputs for food data -->
+                    <input type="hidden" name="foodName" id="hiddenFoodName">
+                    <input type="hidden" name="foodCalories" id="hiddenFoodCalories">
+                    <input type="hidden" name="foodQuantity" id="hiddenFoodQuantity">
+                    <input type="hidden" name="foodUnit" value="g">
 
-                <!-- Buttons -->
-                <div class="button-group">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
-                        Lưu bữa ăn
-                    </button>
-                    <a href="calorie-tracking" class="btn btn-secondary">
-                        <i class="fas fa-chart-line"></i>
-                        Xem theo dõi
-                    </a>
-                    <a href="dashboard" class="btn btn-secondary">
-                        <i class="fas fa-home"></i>
-                        Về trang chủ
-                    </a>
-                </div>
-            </form>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu bữa ăn
+                        </button>
+                        <button type="reset" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-redo"></i> Đặt lại
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
-        let foodItemCount = 0;
+        // Biến toàn cục
+        let selectedFood = null;
+        let selectedMealType = null;
         
-        // Sample food items for suggestions
-        const foodSamples = [
-            { name: 'Cơm trắng', calories: 130, unit: 'g' },
-            { name: 'Phở bò', calories: 350, unit: 'tô' },
-            { name: 'Bánh mì', calories: 250, unit: 'ổ' },
-            { name: 'Trứng gà', calories: 70, unit: 'quả' },
-            { name: 'Chuối', calories: 90, unit: 'quả' },
-            { name: 'Táo', calories: 80, unit: 'quả' },
-            { name: 'Sữa tươi', calories: 60, unit: 'ml' },
-            { name: 'Thịt heo', calories: 250, unit: 'g' },
-            { name: 'Thịt gà', calories: 165, unit: 'g' },
-            { name: 'Cá thu', calories: 150, unit: 'g' }
-        ];
-
-        function selectMealType(mealType) {
-            // Remove selected class from all options
+        // Khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thiết lập ngày giờ hiện tại nếu chưa có giá trị
+            if (!document.getElementById('date').value) {
+                const now = new Date();
+                const localDateTime = now.toISOString().slice(0, 16);
+                document.getElementById('date').value = localDateTime;
+            }
+            
+            // Thêm sự kiện click cho các thẻ thực phẩm
+            document.querySelectorAll('.food-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const foodId = this.dataset.foodId;
+                    const foodName = this.dataset.foodName;
+                    const foodType = this.dataset.foodType;
+                    const calories = this.dataset.foodCalories;
+                    const protein = this.dataset.foodProtein;
+                    const carbs = this.dataset.foodCarbs;
+                    const fat = this.dataset.foodFat;
+                    
+                    selectFood(foodId, foodName, foodType, calories, protein, carbs, fat);
+                });
+            });
+            
+            // Khôi phục trạng thái form nếu có
+            <c:if test="${not empty param.mealType}">
+                selectMealType('${param.mealType}');
+            </c:if>
+        });
+        
+        // Chọn thực phẩm
+        function selectFood(id, name, type, calories, protein, carbs, fat) {
+            // Bỏ chọn tất cả các thẻ thực phẩm
+            document.querySelectorAll('.food-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Chọn thẻ thực phẩm hiện tại
+            const selectedCard = document.querySelector(`.food-card[data-food-id="${id}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+            
+            selectedFood = { id, name, type, calories, protein, carbs, fat };
+            
+            // Cập nhật form với thông tin thực phẩm
+            document.getElementById('selectedFoodName').textContent = name;
+            document.getElementById('selectedFoodType').textContent = type;
+            document.getElementById('selectedFoodCalories').textContent = calories;
+            document.getElementById('selectedFoodProtein').textContent = protein + 'g';
+            document.getElementById('selectedFoodCarbs').textContent = carbs + 'g';
+            document.getElementById('selectedFoodFat').textContent = fat + 'g';
+            
+            // Cập nhật hidden fields cho meal_item
+            document.getElementById('hiddenFoodName').value = name;
+            document.getElementById('hiddenFoodCalories').value = calories;
+            
+            // Cập nhật quantity từ input
+            const quantityInput = document.querySelector('input[name="quantity"]');
+            document.getElementById('hiddenFoodQuantity').value = quantityInput ? quantityInput.value : '100';
+            
+            // Hiển thị thông tin thực phẩm
+            document.getElementById('selectedFoodInfo').style.display = 'block';
+            
+            // Tính toán calories ngay lập tức
+            calculateTotalCalories();
+        }
+        
+        // Chọn loại bữa ăn
+        function selectMealType(mealType, element) {
+            // Bỏ chọn tất cả các tùy chọn loại bữa ăn
             document.querySelectorAll('.meal-type-option').forEach(option => {
                 option.classList.remove('selected');
             });
             
-            // Add selected class to clicked option
-            event.currentTarget.classList.add('selected');
+            // Chọn tùy chọn loại bữa ăn hiện tại
+            if (element) {
+                element.classList.add('selected');
+            } else {
+                // Tìm phần tử tương ứng với loại bữa ăn
+                const mealTypeElement = document.querySelector(`.meal-type-option[data-meal-type="${mealType}"]`);
+                if (mealTypeElement) {
+                    mealTypeElement.classList.add('selected');
+                }
+            }
             
-            // Set hidden input value
+            selectedMealType = mealType;
             document.getElementById('mealType').value = mealType;
         }
         
-        function addFoodItem() {
-            foodItemCount++;
-            const container = document.getElementById('foodItemsContainer');
-            const emptyState = document.getElementById('emptyFoodState');
-            
-            if (emptyState) {
-                emptyState.style.display = 'none';
-            }
-            
-            const foodItem = document.createElement('div');
-            foodItem.className = 'food-item';
-            foodItem.id = `foodItem${foodItemCount}`;
-            
-            foodItem.innerHTML = `
-                <div class="food-item-header">
-                    <div class="food-item-title">Thực phẩm ${foodItemCount}</div>
-                    <button type="button" class="remove-food-btn" onclick="removeFoodItem(${foodItemCount})">
-                        <i class="fas fa-trash"></i> Xóa
-                    </button>
-                </div>
-                <div class="food-input-group">
-                    <div>
-                        <label>Tên thực phẩm</label>
-                        <div style="position: relative;">
-                            <input type="text" name="foodName_${foodItemCount}" placeholder="Nhập tên thực phẩm" 
-                                   onkeyup="showFoodSuggestions(this, ${foodItemCount})" required>
-                            <div class="food-suggestions" id="suggestions_${foodItemCount}"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <label>Số lượng</label>
-                        <input type="number" name="quantity_${foodItemCount}" min="0" step="0.1" 
-                               placeholder="Số lượng" onchange="calculateTotalCalories()" required>
-                    </div>
-                    <div>
-                        <label>Đơn vị</label>
-                        <select name="unit_${foodItemCount}" required>
-                            <option value="">Chọn đơn vị</option>
-                            <option value="g">gram (g)</option>
-                            <option value="kg">kilogram (kg)</option>
-                            <option value="ml">mililít (ml)</option>
-                            <option value="l">lít (l)</option>
-                            <option value="quả">quả</option>
-                            <option value="tô">tô</option>
-                            <option value="chén">chén</option>
-                            <option value="muỗng">muỗng</option>
-                            <option value="lát">lát</option>
-                            <option value="miếng">miếng</option>
-                            <option value="ổ">ổ</option>
-                            <option value="lon">lon</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Calories (kcal)</label>
-                        <input type="number" name="calories_${foodItemCount}" min="0" 
-                               placeholder="Calories" onchange="calculateTotalCalories()" required>
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(foodItem);
-            calculateTotalCalories();
-        }
-        
-        function removeFoodItem(itemId) {
-            const item = document.getElementById(`foodItem${itemId}`);
-            if (item) {
-                item.remove();
-                calculateTotalCalories();
-                
-                // Show empty state if no food items
-                const container = document.getElementById('foodItemsContainer');
-                const foodItems = container.querySelectorAll('.food-item');
-                if (foodItems.length === 0) {
-                    document.getElementById('emptyFoodState').style.display = 'block';
-                }
-            }
-        }
-        
-        function showFoodSuggestions(input, itemId) {
-            const query = input.value.toLowerCase();
-            const suggestionsDiv = document.getElementById(`suggestions_${itemId}`);
-            
-            if (query.length < 2) {
-                suggestionsDiv.style.display = 'none';
-                return;
-            }
-            
-            const filteredFoods = foodSamples.filter(food => 
-                food.name.toLowerCase().includes(query)
-            );
-            
-            if (filteredFoods.length === 0) {
-                suggestionsDiv.style.display = 'none';
-                return;
-            }
-            
-            suggestionsDiv.innerHTML = filteredFoods.map(food => `
-                <div class="food-suggestion" onclick="selectFoodSuggestion('${food.name}', ${food.calories}, '${food.unit}', ${itemId})">
-                    ${food.name} - ${food.calories} kcal/${food.unit}
-                </div>
-            `).join('');
-            
-            suggestionsDiv.style.display = 'block';
-        }
-        
-        function selectFoodSuggestion(name, calories, unit, itemId) {
-            document.querySelector(`input[name="foodName_${itemId}"]`).value = name;
-            document.querySelector(`input[name="calories_${itemId}"]`).value = calories;
-            document.querySelector(`select[name="unit_${itemId}"]`).value = unit;
-            document.querySelector(`input[name="quantity_${itemId}"]`).value = 1;
-            
-            document.getElementById(`suggestions_${itemId}`).style.display = 'none';
-            calculateTotalCalories();
-        }
-        
+        // Tính tổng calories
         function calculateTotalCalories() {
-            let totalCalories = 0;
-            const foodItems = document.querySelectorAll('.food-item');
+            const quantityInput = document.querySelector('input[name="quantity"]');
+            const caloriesInput = document.getElementById('selectedFoodCalories');
             
-            foodItems.forEach(item => {
-                const quantity = parseFloat(item.querySelector('input[name^="quantity_"]').value) || 0;
-                const calories = parseFloat(item.querySelector('input[name^="calories_"]').value) || 0;
-                totalCalories += quantity * calories;
-            });
+            const quantity = quantityInput ? parseFloat(quantityInput.value) || 0 : 0;
+            const calories = caloriesInput ? parseFloat(caloriesInput.textContent) || 0 : 0;
             
-            const totalDisplay = document.getElementById('totalCaloriesDisplay');
-            const totalValue = document.getElementById('totalCaloriesValue');
+            // Cập nhật hidden quantity field
+            if (selectedFood) {
+                document.getElementById('hiddenFoodQuantity').value = quantity;
+            }
+            
+            // Tính calories theo tỷ lệ (quantity/100g * calories)
+            const totalCalories = (quantity / 100) * calories;
+            
+            // Hiển thị kết quả
+            document.getElementById('totalCaloriesValue').textContent = Math.round(totalCalories) + ' kcal';
+            document.getElementById('totalCalories').value = Math.round(totalCalories);
             
             if (totalCalories > 0) {
-                totalDisplay.style.display = 'block';
-                totalValue.textContent = Math.round(totalCalories) + ' kcal';
+                document.getElementById('totalCaloriesDisplay').style.display = 'block';
             } else {
-                totalDisplay.style.display = 'none';
+                document.getElementById('totalCaloriesDisplay').style.display = 'none';
             }
         }
         
-        // Add keyboard support for meal type options
-        document.querySelectorAll('.meal-type-option').forEach(option => {
-            option.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.click();
-                }
-            });
-        });
-        
-        // Form validation
-        document.getElementById('mealForm').addEventListener('submit', function(e) {
-            const mealType = document.getElementById('mealType').value;
-            const foodItems = document.querySelectorAll('.food-item');
+        // Đặt lại form
+        function resetForm() {
+            selectedFood = null;
+            selectedMealType = null;
             
-            if (!mealType) {
-                e.preventDefault();
-                alert('Vui lòng chọn loại bữa ăn');
-                return false;
-            }
-            
-            if (foodItems.length === 0) {
-                e.preventDefault();
-                alert('Vui lòng thêm ít nhất một thực phẩm');
-                return false;
-            }
-            
-            // Validate each food item
-            let isValid = true;
-            foodItems.forEach(item => {
-                const foodName = item.querySelector('input[name^="foodName_"]').value;
-                const quantity = item.querySelector('input[name^="quantity_"]').value;
-                const unit = item.querySelector('select[name^="unit_"]').value;
-                const calories = item.querySelector('input[name^="calories_"]').value;
-                
-                if (!foodName || !quantity || !unit || !calories) {
-                    isValid = false;
-                }
+            document.querySelectorAll('.food-card').forEach(card => {
+                card.classList.remove('selected');
             });
             
-            if (!isValid) {
-                e.preventDefault();
-                alert('Vui lòng điền đầy đủ thông tin cho tất cả các thực phẩm');
-                return false;
+            document.querySelectorAll('.meal-type-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.getElementById('selectedFoodInfo').style.display = 'none';
+            document.getElementById('totalCaloriesDisplay').style.display = 'none';
+            document.getElementById('mealType').value = '';
+            
+            // Thiết lập lại ngày giờ hiện tại
+            const now = new Date();
+            const localDateTime = now.toISOString().slice(0, 16);
+            document.getElementById('date').value = localDateTime;
+        }
+        
+        // Xử lý gửi form
+        document.getElementById('mealForm').addEventListener('submit', function(event) {
+            // Đảm bảo hidden fields được cập nhật trước khi submit
+            if (selectedFood) {
+                document.getElementById('hiddenFoodName').value = selectedFood.name;
+                document.getElementById('hiddenFoodCalories').value = selectedFood.calories;
+                const quantityInput = document.querySelector('input[name="quantity"]');
+                document.getElementById('hiddenFoodQuantity').value = quantityInput ? quantityInput.value : '100';
             }
             
-            return true;
-        });
-        
-        // Close suggestions when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.food-suggestions') && !e.target.matches('input[name^="foodName_"]')) {
-                document.querySelectorAll('.food-suggestions').forEach(suggestion => {
-                    suggestion.style.display = 'none';
-                });
+            // Debug: Log form data before submission
+            const formData = new FormData(this);
+            console.log('Form data being submitted:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
             }
-        });
-        
-        // Add first food item automatically if empty
-        window.onload = function() {
-            const container = document.getElementById('foodItemsContainer');
-            const foodItems = container.querySelectorAll('.food-item');
             
-            if (foodItems.length === 0) {
-                addFoodItem();
-            }
-        };
+            // Hiển thị trạng thái loading
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '<div class="loading"><div class="spinner"></div> Đang lưu...</div>';
+            submitButton.disabled = true;
+            
+            // Cho phép form được gửi đi
+        });
     </script>
 </body>
 </html>

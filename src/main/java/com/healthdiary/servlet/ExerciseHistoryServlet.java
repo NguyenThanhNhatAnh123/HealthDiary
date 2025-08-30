@@ -35,7 +35,18 @@ public class ExerciseHistoryServlet extends HttpServlet {
             User user = (User) session.getAttribute("user");
             List<Exercise> exercises = exerciseDAO.getUserExercises(user.getId());
 
+            // Calculate statistics
+            int totalSessions = exercises.size();
+            int totalDuration = exercises.stream().mapToInt(Exercise::getDurationMin).sum();
+            int totalCalories = exercises.stream().mapToInt(Exercise::getCaloriesBurned).sum();
+            int avgDuration = totalSessions > 0 ? totalDuration / totalSessions : 0;
+
             request.setAttribute("exercises", exercises);
+            request.setAttribute("totalSessions", totalSessions);
+            request.setAttribute("totalDuration", totalDuration);
+            request.setAttribute("totalCalories", totalCalories);
+            request.setAttribute("avgDuration", avgDuration);
+            
             request.getRequestDispatcher("exercise-history.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

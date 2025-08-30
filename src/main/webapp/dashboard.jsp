@@ -872,6 +872,9 @@
                     <a href="disease-management" class="btn btn-secondary">
                         <i class="fas fa-stethoscope"></i> Tình trạng sức khỏe bệnh
                     </a>
+                    <a href="gpt" class="btn btn-secondary"">
+                        <i class="fas fa-robot"></i> Trợ lý AI
+                    </a>
                 </div>
             </div>
         </div>
@@ -932,6 +935,10 @@
                     case 'c':
                         e.preventDefault();
                         window.location.href = 'weight-chart';
+                        break;
+                    case 'g':
+                        e.preventDefault();
+                        window.location.href = 'gpt';
                         break;
                 }
             }

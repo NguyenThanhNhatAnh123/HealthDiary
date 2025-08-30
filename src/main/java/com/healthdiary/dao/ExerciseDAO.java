@@ -161,7 +161,7 @@ public class ExerciseDAO {
 
     // Methods for user exercise logs
     public boolean addUserExercise(Exercise exercise) throws Exception {
-        String sql = "INSERT INTO exercises (userId, exerciseType, durationMin, caloriesBurned, logDate) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO exercises (user_id, exercise_type, duration_min, calories_burned, log_date) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -181,7 +181,7 @@ public class ExerciseDAO {
 
     public List<Exercise> getUserExercises(int userId) throws Exception {
         List<Exercise> exercises = new ArrayList<>();
-        String sql = "SELECT * FROM exercises WHERE userId = ? ORDER BY logDate DESC";
+        String sql = "SELECT * FROM exercises WHERE user_id = ? ORDER BY log_date DESC";
 
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -192,11 +192,11 @@ public class ExerciseDAO {
             while (rs.next()) {
                 Exercise exercise = new Exercise();
                 exercise.setId(rs.getInt("id"));
-                exercise.setUserId(rs.getInt("userId"));
-                exercise.setExerciseType(rs.getString("exerciseType"));
-                exercise.setDurationMin(rs.getInt("durationMin"));
-                exercise.setCaloriesBurned(rs.getInt("caloriesBurned"));
-                exercise.setLogDate(rs.getDate("logDate"));
+                exercise.setUserId(rs.getInt("user_id"));
+                exercise.setExerciseType(rs.getString("exercise_type"));
+                exercise.setDurationMin(rs.getInt("duration_min"));
+                exercise.setCaloriesBurned(rs.getInt("calories_burned"));
+                exercise.setLogDate(rs.getDate("log_date"));
                 exercises.add(exercise);
             }
         } catch (SQLException e) {
@@ -207,7 +207,7 @@ public class ExerciseDAO {
 
     public List<Exercise> getUserExercisesForDate(int userId, String date) throws Exception {
         List<Exercise> exercises = new ArrayList<>();
-        String sql = "SELECT * FROM exercises WHERE userId = ? AND DATE(logDate) = ? ORDER BY logDate DESC";
+        String sql = "SELECT * FROM exercises WHERE user_id = ? AND DATE(log_date) = ? ORDER BY log_date DESC";
 
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -219,11 +219,11 @@ public class ExerciseDAO {
             while (rs.next()) {
                 Exercise exercise = new Exercise();
                 exercise.setId(rs.getInt("id"));
-                exercise.setUserId(rs.getInt("userId"));
-                exercise.setExerciseType(rs.getString("exerciseType"));
-                exercise.setDurationMin(rs.getInt("durationMin"));
-                exercise.setCaloriesBurned(rs.getInt("caloriesBurned"));
-                exercise.setLogDate(rs.getDate("logDate"));
+                exercise.setUserId(rs.getInt("user_id"));
+                exercise.setExerciseType(rs.getString("exercise_type"));
+                exercise.setDurationMin(rs.getInt("duration_min"));
+                exercise.setCaloriesBurned(rs.getInt("calories_burned"));
+                exercise.setLogDate(rs.getDate("log_date"));
                 exercises.add(exercise);
             }
         } catch (SQLException e) {
@@ -233,7 +233,7 @@ public class ExerciseDAO {
     }
 
     public double getTotalCaloriesBurnedForDate(int userId, String date) throws Exception {
-        String sql = "SELECT SUM(caloriesBurned) FROM exercises WHERE userId = ? AND DATE(logDate) = ?";
+        String sql = "SELECT SUM(calories_burned) FROM exercises WHERE user_id = ? AND DATE(log_date) = ?";
 
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -560,10 +560,10 @@
                             <c:forEach var="exercise" items="${exercises}">
                                 <div class="list-item">
                                     <div class="item-info">
-                                        <div class="item-name">${exercise.exerciseName}</div>
+                                        <div class="item-name">${exercise.exerciseType}</div>
                                         <div class="item-details">
                                             <i class="fas fa-stopwatch"></i>
-                                            Thời gian: ${exercise.duration} phút
+                                            Thời gian: ${exercise.durationMin} phút
                                             <span>|</span>
                                             <i class="fas fa-clock"></i>
                                             <fmt:formatDate value="${exercise.logDate}" pattern="HH:mm" />

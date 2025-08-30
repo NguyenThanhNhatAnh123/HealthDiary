@@ -37,7 +37,7 @@ public class MealDAO {
 
     // Thêm meal item
     public boolean addMealItem(Meal_item mealItem) {
-        String sql = "INSERT INTO meal_items (meal_id, food_name, calories, image) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO meal_items (meal_id, food_name, calories, image, quantity) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -45,6 +45,7 @@ public class MealDAO {
             pstmt.setString(2, mealItem.getFoodName());
             pstmt.setInt(3, mealItem.getCalories());
             pstmt.setString(4, mealItem.getImage());
+            pstmt.setDouble(5, mealItem.getQuantity()); // Thêm dòng này
 
             return pstmt.executeUpdate() > 0;
         } catch (Exception e) {
@@ -103,7 +104,6 @@ public class MealDAO {
         return null;
     }
 
-    // Lấy meal items của một meal
     public List<Meal_item> getMealItemsByMealId(int mealId) {
         List<Meal_item> mealItems = new ArrayList<>();
         String sql = "SELECT * FROM meal_items WHERE meal_id = ?";
@@ -121,6 +121,7 @@ public class MealDAO {
                 mealItem.setFoodName(rs.getString("food_name"));
                 mealItem.setCalories(rs.getInt("calories"));
                 mealItem.setImage(rs.getString("image"));
+                mealItem.setQuantity(rs.getDouble("quantity")); // Thêm dòng này
                 mealItems.add(mealItem);
             }
         } catch (Exception e) {

@@ -7,102 +7,461 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch sử tập luyện - Health Diary</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(25, 118, 210, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+        }
+
+        .nav-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1976d2;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-brand::before {
+            content: "🏥";
+            font-size: 28px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-menu a {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            background: #e3f2fd;
+            transform: translateY(-1px);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 20px rgba(25, 118, 210, 0.1);
+            padding: 40px 32px;
+            margin-bottom: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1976d2, #42a5f5, #1976d2);
+        }
+
+        .page-header h1 {
+            color: #1976d2;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Exercise Statistics */
         .exercise-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
-            margin: 20px 0;
+            margin-bottom: 24px;
         }
+
         .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #fff;
+            border-radius: 16px;
+            padding: 32px 24px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.12);
             text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1976d2, #42a5f5);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(25, 118, 210, 0.16);
+        }
+
+        .stat-icon {
+            background: #e3f2fd;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+            color: #1976d2;
+        }
+
         .stat-number {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #007bff;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1976d2;
         }
+
         .stat-label {
             font-size: 14px;
             color: #666;
+            font-weight: 500;
         }
+
+        /* Filter Controls */
+        .filter-section {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.12);
+            padding: 24px 32px;
+            margin-bottom: 24px;
+        }
+
+        .filter-section h3 {
+            color: #1976d2;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-section h3 i {
+            background: #e3f2fd;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            color: #1976d2;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-controls select,
+        .filter-controls input {
+            padding: 14px 16px;
+            border: 2px solid #e3f2fd;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #fafafa;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .filter-controls select:focus,
+        .filter-controls input:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* Exercise List */
         .exercise-list {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.12);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
         }
+
+        .exercise-list::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1976d2, #42a5f5, #1976d2);
+        }
+
+        .exercise-list-header {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: #fff;
+            padding: 24px 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .exercise-list-header i {
+            font-size: 24px;
+        }
+
+        .exercise-list-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .exercise-list-content {
+            padding: 0;
+        }
+
         .exercise-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            transition: background-color 0.2s;
+            padding: 20px 32px;
+            border-bottom: 1px solid #e3f2fd;
+            transition: all 0.3s ease;
         }
+
         .exercise-item:hover {
             background-color: #f8f9fa;
+            transform: translateX(4px);
         }
+
         .exercise-item:last-child {
             border-bottom: none;
         }
+
         .exercise-info {
             flex: 1;
         }
+
         .exercise-name {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
+            font-weight: 600;
+            color: #1976d2;
+            margin-bottom: 8px;
+            font-size: 16px;
         }
+
         .exercise-details {
             font-size: 14px;
             color: #666;
-        }
-        .exercise-calories {
-            font-weight: bold;
-            color: #dc3545;
-            text-align: right;
-        }
-        .filter-controls {
             display: flex;
-            gap: 15px;
-            margin: 20px 0;
+            align-items: center;
+            gap: 12px;
             flex-wrap: wrap;
         }
-        .filter-controls select,
-        .filter-controls input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .pagination {
+
+        .exercise-details span {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
+            align-items: center;
+            gap: 4px;
         }
-        .pagination button {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 5px;
+
+        .exercise-calories {
+            background: linear-gradient(135deg, #d32f2f, #f44336);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin: 0 8px;
         }
-        .pagination button.active {
-            background: #007bff;
-            color: white;
-            border-color: #007bff;
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
         }
-        .pagination button:hover:not(.active) {
-            background: #f8f9fa;
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #1976d2;
+            border: 2px solid #1976d2;
+        }
+
+        .btn-secondary:hover {
+            background: #e3f2fd;
+            transform: translateY(-1px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 32px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #e3f2fd;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #1976d2;
+            margin-bottom: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .page-header {
+                padding: 32px 24px;
+            }
+
+            .exercise-stats {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .filter-section {
+                padding: 20px 24px;
+            }
+
+            .filter-controls {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .exercise-list-header {
+                padding: 20px 24px;
+            }
+
+            .exercise-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 20px 24px;
+            }
+
+            .exercise-calories {
+                align-self: stretch;
+                text-align: center;
+            }
+
+            .action-buttons .btn {
+                display: block;
+                margin: 8px auto;
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -112,89 +471,164 @@
         <div class="nav-container">
             <a href="dashboard" class="nav-brand">Health Diary</a>
             <div class="nav-menu">
-                <a href="dashboard">Trang chủ</a>
-                <a href="exercise-history">Lịch sử tập luyện</a>
-                <a href="exercise-log">Ghi bài tập</a>
-                <a href="profile">Hồ sơ</a>
-                <a href="logout">Đăng xuất</a>
+                <a href="dashboard">
+                    <i class="fas fa-home"></i> Trang chủ
+                </a>
+                <a href="exercise-history">
+                    <i class="fas fa-history"></i> Lịch sử tập luyện
+                </a>
+                <a href="exercise-log">
+                    <i class="fas fa-plus-circle"></i> Ghi bài tập
+                </a>
+                <a href="profile">
+                    <i class="fas fa-user"></i> Hồ sơ
+                </a>
+                <a href="logout">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </a>
             </div>
         </div>
     </nav>
 
     <div class="main-content">
         <div class="dashboard-container">
-            <h1>Lịch sử tập luyện</h1>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-history"></i> Lịch sử tập luyện</h1>
+                <p>Theo dõi tiến trình và thống kê hoạt động thể chất của bạn</p>
+            </div>
             
             <!-- Exercise Statistics -->
             <div class="exercise-stats">
                 <div class="stat-card">
-                    <div class="stat-number" id="totalSessions">0</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-number" id="totalSessions">${totalSessions}</div>
                     <div class="stat-label">Tổng buổi tập</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="totalDuration">0</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-number" id="totalDuration">${totalDuration}</div>
                     <div class="stat-label">Tổng thời gian (phút)</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="totalCalories">0</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-number" id="totalCalories">${totalCalories}</div>
                     <div class="stat-label">Tổng calo đốt cháy</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="avgDuration">0</div>
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-number" id="avgDuration">${avgDuration}</div>
                     <div class="stat-label">TB thời gian/buổi</div>
                 </div>
             </div>
             
             <!-- Filter Controls -->
-            <div class="filter-controls">
-                <div>
-                    <label for="dateFrom">Từ ngày:</label>
-                    <input type="date" id="dateFrom" onchange="filterExercises()">
-                </div>
-                <div>
-                    <label for="dateTo">Đến ngày:</label>
-                    <input type="date" id="dateTo" onchange="filterExercises()">
-                </div>
-                <div>
-                    <label for="exerciseType">Loại bài tập:</label>
-                    <select id="exerciseType" onchange="filterExercises()">
-                        <option value="">Tất cả</option>
-                        <option value="cardio">Cardio</option>
-                        <option value="strength">Sức mạnh</option>
-                        <option value="flexibility">Linh hoạt</option>
-                        <option value="balance">Cân bằng</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="intensity">Cường độ:</label>
-                    <select id="intensity" onchange="filterExercises()">
-                        <option value="">Tất cả</option>
-                        <option value="low">Nhẹ</option>
-                        <option value="medium">Trung bình</option>
-                        <option value="high">Cao</option>
-                    </select>
+            <div class="filter-section">
+                <h3>
+                    <i class="fas fa-filter"></i>
+                    Bộ lọc tìm kiếm
+                </h3>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label" for="dateFrom">
+                            <i class="fas fa-calendar-alt"></i>
+                            Từ ngày
+                        </label>
+                        <input type="date" id="dateFrom" value="${dateFrom}">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="dateTo">
+                            <i class="fas fa-calendar-alt"></i>
+                            Đến ngày
+                        </label>
+                        <input type="date" id="dateTo" value="${dateTo}">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="exerciseType">
+                            <i class="fas fa-dumbbell"></i>
+                            Loại bài tập
+                        </label>
+                        <select id="exerciseType">
+                            <option value="">Tất cả</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="strength">Sức mạnh</option>
+                            <option value="flexibility">Linh hoạt</option>
+                            <option value="balance">Cân bằng</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label" for="intensity">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Cường độ
+                        </label>
+                        <select id="intensity">
+                            <option value="">Tất cả</option>
+                            <option value="low">Nhẹ</option>
+                            <option value="medium">Trung bình</option>
+                            <option value="high">Cao</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
             <!-- Exercise List -->
             <div class="exercise-list">
-                <h3>Danh sách bài tập</h3>
-                <div id="exerciseList">
-                    <p style="text-align: center; color: #666;">Đang tải dữ liệu...</p>
+                <div class="exercise-list-header">
+                    <i class="fas fa-list-ul"></i>
+                    <h3>Danh sách bài tập</h3>
                 </div>
-                
-                <!-- Pagination -->
-                <div class="pagination" id="pagination">
-                    <!-- Pagination buttons will be generated here -->
+                <div class="exercise-list-content" id="exerciseList">
+                    <c:choose>
+                        <c:when test="${not empty exercises}">
+                            <c:forEach var="exercise" items="${exercises}">
+                                <div class="exercise-item">
+                                    <div class="exercise-info">
+                                        <div class="exercise-name">${exercise.exerciseType}</div>
+                                        <div class="exercise-details">
+                                            <span>
+                                                <i class="fas fa-calendar"></i>
+                                                <fmt:formatDate value="${exercise.logDate}" pattern="dd/MM/yyyy HH:mm" />
+                                            </span>
+                                            <span>
+                                                <i class="fas fa-clock"></i>
+                                                ${exercise.durationMin} phút
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="exercise-calories">
+                                        <i class="fas fa-fire"></i>
+                                        ${exercise.caloriesBurned} kcal
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="empty-state">
+                                <i class="fas fa-dumbbell"></i>
+                                <h3>Chưa có dữ liệu</h3>
+                                <p>Chưa có bài tập nào được ghi nhận trong khoảng thời gian này.</p>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
             
             <!-- Action Buttons -->
-            <div style="text-align: center; margin-top: 30px;">
-                <a href="exercise-log" class="btn btn-primary" style="display: inline-block; width: auto; margin: 0 10px;">
+            <div class="action-buttons">
+                <a href="exercise-log" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
                     Ghi bài tập mới
                 </a>
-                <a href="dashboard" class="btn btn-secondary" style="display: inline-block; width: auto; margin: 0 10px;">
+                <a href="dashboard" class="btn btn-secondary">
+                    <i class="fas fa-home"></i>
                     Về trang chủ
                 </a>
             </div>
@@ -202,142 +636,6 @@
     </div>
     
     <script>
-        let currentPage = 1;
-        let totalPages = 1;
-        let exercises = [];
-        
-        // Load exercise history
-        function loadExerciseHistory(page = 1) {
-            const dateFrom = document.getElementById('dateFrom').value;
-            const dateTo = document.getElementById('dateTo').value;
-            const exerciseType = document.getElementById('exerciseType').value;
-            const intensity = document.getElementById('intensity').value;
-            
-            // Show loading
-            document.getElementById('exerciseList').innerHTML = '<p style="text-align: center; color: #666;">Đang tải dữ liệu...</p>';
-            
-            // Build query parameters
-            const params = new URLSearchParams({
-                page: page,
-                dateFrom: dateFrom || '',
-                dateTo: dateTo || '',
-                exerciseType: exerciseType || '',
-                intensity: intensity || ''
-            });
-            
-            // Fetch data from server
-            fetch(`api/exercise-history?${params}`)
-                .then(response => response.json())
-                .then(data => {
-                    exercises = data.exercises || [];
-                    currentPage = data.currentPage || 1;
-                    totalPages = data.totalPages || 1;
-                    
-                    updateExerciseList();
-                    updateStatistics(data.statistics);
-                    updatePagination();
-                })
-                .catch(error => {
-                    console.error('Error loading exercise history:', error);
-                    document.getElementById('exerciseList').innerHTML = '<p style="text-align: center; color: #666;">Không thể tải dữ liệu</p>';
-                });
-        }
-        
-        // Update exercise list display
-        function updateExerciseList() {
-            const exerciseList = document.getElementById('exerciseList');
-            
-            if (exercises.length === 0) {
-                exerciseList.innerHTML = '<p style="text-align: center; color: #666;">Không có dữ liệu bài tập</p>';
-                return;
-            }
-            
-            let html = '';
-            exercises.forEach(exercise => {
-                const date = new Date(exercise.date).toLocaleDateString('vi-VN');
-                const time = new Date(exercise.date).toLocaleTimeString('vi-VN', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                html += `
-                    <div class="exercise-item">
-                        <div class="exercise-info">
-                            <div class="exercise-name">${exercise.exerciseName}</div>
-                            <div class="exercise-details">
-                                ${date} ${time} • ${exercise.duration} phút • ${exercise.intensity}
-                            </div>
-                        </div>
-                        <div class="exercise-calories">
-                            ${exercise.totalCaloriesBurned} kcal
-                        </div>
-                    </div>
-                `;
-            });
-            
-            exerciseList.innerHTML = html;
-        }
-        
-        // Update statistics
-        function updateStatistics(stats) {
-            if (!stats) return;
-            
-            document.getElementById('totalSessions').textContent = stats.totalSessions || 0;
-            document.getElementById('totalDuration').textContent = stats.totalDuration || 0;
-            document.getElementById('totalCalories').textContent = stats.totalCalories || 0;
-            document.getElementById('avgDuration').textContent = stats.avgDuration || 0;
-        }
-        
-        // Update pagination
-        function updatePagination() {
-            const pagination = document.getElementById('pagination');
-            
-            if (totalPages <= 1) {
-                pagination.innerHTML = '';
-                return;
-            }
-            
-            let html = '';
-            
-            // Previous button
-            if (currentPage > 1) {
-                html += `<button onclick="loadExerciseHistory(${currentPage - 1})">Trước</button>`;
-            }
-            
-            // Page numbers
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === currentPage) {
-                    html += `<button class="active">${i}</button>`;
-                } else {
-                    html += `<button onclick="loadExerciseHistory(${i})">${i}</button>`;
-                }
-            }
-            
-            // Next button
-            if (currentPage < totalPages) {
-                html += `<button onclick="loadExerciseHistory(${currentPage + 1})">Sau</button>`;
-            }
-            
-            pagination.innerHTML = html;
-        }
-        
-        // Filter exercises
-        function filterExercises() {
-            loadExerciseHistory(1); // Reset to first page when filtering
-        }
-        
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set default date range (last 30 days)
-            const today = new Date();
-            const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
-            
-            document.getElementById('dateFrom').value = thirtyDaysAgo.toISOString().split('T')[0];
-            document.getElementById('dateTo').value = today.toISOString().split('T')[0];
-            
-            loadExerciseHistory();
-        });
-        
         // Check if user is logged in
         <c:if test="${empty user}">
             window.location.href = 'login';

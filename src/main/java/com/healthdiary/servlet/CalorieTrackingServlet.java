@@ -30,8 +30,14 @@ public class CalorieTrackingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("login");
+            return;
+        }
+
         try {
-            User user = (User) request.getSession().getAttribute("user");
+            User user = (User) session.getAttribute("user");
             String date = request.getParameter("date");
 
             if (date == null) {
